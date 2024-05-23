@@ -63,4 +63,5 @@ while True:
   str = extractKeywords(input_string)
   print(str)
   lstKeyWords = list(str.replace(" ", "").split(","))
+  
   print(lstKeyWords)
