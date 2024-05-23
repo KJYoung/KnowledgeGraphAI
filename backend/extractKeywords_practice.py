@@ -1,6 +1,7 @@
 import os
 from friendli import Friendli
 from dotenv import load_dotenv
+import requests
 
 QUIT = ["q", "Q", "Quit", "quit", "quit()", "exit()", "exit"]
 
@@ -27,7 +28,7 @@ client = Friendli(token=FRIENDLI_TOKEN)
     yield res
 '''
 
-def extractKeywords(input_string):
+def extractKeywords_word(input_string):
   global client
   chat_completion = client.chat.completions.create(
     model="meta-llama-3-70b-instruct",
@@ -40,6 +41,27 @@ def extractKeywords(input_string):
     stream=False,
   )
   return chat_completion.choices[0].message.content
+
+def extractKeywords_URL(url):
+  global client
+  chat_completion = client.chat.completions.create(
+    model="meta-llama-3-70b-instruct",
+    messages=[
+        {
+            "role": "user",
+            "content": "Can you give me keywords at " + url + "? Don't include any introductory sentence, but just include words seperated with \",\", and no other sentences. Don't attach header or title in front of your response. Just enumerate the words."
+        }
+    ],
+    stream=False,
+  )
+  return chat_completion.choices[0].message.content
+
+def isURL(input_string):
+  try:
+    response = requests.get(input_string)
+    return True
+  except:
+    return False
 
 
 '''chat_completion = client.chat.completions.create(
@@ -60,8 +82,10 @@ while True:
   if input_string in QUIT:
     print("Exiting the program")
     break
-  str = extractKeywords(input_string)
-  print(str)
-  lstKeyWords = list(str.replace(" ", "").split(","))
-  
+  if isURL(input_string):
+    str1 = extractKeywords_URL(input_string)
+  else:
+    str1 = extractKeywords_word(input_string)
+  print(str1)
+  lstKeyWords = list(str1.replace(" ", "").split(","))
   print(lstKeyWords)
