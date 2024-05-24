@@ -5,12 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import requests
-import spacy
 import networkx as nx
-import json
 import logging
 import os
-import gradio as gr
 from friendli import Friendli
 from dotenv import load_dotenv
 from .models import Article
@@ -24,13 +21,13 @@ FRIENDLI_TOKEN = os.getenv('FRIENDLI_TOKEN')
 print(FRIENDLI_TOKEN)
 client = Friendli(token=FRIENDLI_TOKEN)
 
-# Load spaCy model
-nlp = spacy.load('en_core_web_sm')
-
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+################################################################################################################################
+
+# 처음 URL로부터 정보 얻고, 그에 대한 대화 나누는 View
 class ExtractConceptsView(APIView):
     def chat_function(self, message, history):
         new_messages = []
@@ -80,10 +77,6 @@ class ExtractConceptsView(APIView):
                 url_with_prompt = PROMPT_FOR_URL.format(url=url)
                 llm_result = self.chat_function(message=url_with_prompt, history=history)
 
-                # Extract the keywords from LLM result
-                concepts = self.extract_concepts(llm_result)
-
-
                 # Create and save the Article object
                 article = Article(name=url, link=url, summary=llm_result)
                 article.save()
@@ -130,19 +123,33 @@ class ExtractConceptsView(APIView):
                 logger.error(f"An error occurred: {e}")
                 return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def extract_concepts(self, text):
-        # try:
-        #     doc = nlp(text)
-        #     concepts = [chunk.text for chunk in doc.noun_chunks]
-        #     return concepts
-        try:
-            pattern = re.compile(r"\d+\.\s+\*\*(.*?)\*\*:")
-            keywords = pattern.findall(text)
-            return keywords
+################################################################################################################################
+# 그래프 관련 API 날리는 View
+class KnowledgeGraphView(APIView):
+    def chat_function(self, message, history):
+        new_messages = []
+        for user, chatbot in history:
+            new_messages.append({"role": "user", "content": user})
+            new_messages.append({"role": "assistant", "content": chatbot})
+        new_messages.append({"role": "user", "content": message})
 
-        except Exception as e:
-            logger.error(f"Error extracting concepts: {e}")
-            raise
+        stream = client.chat.completions.create(
+            model="meta-llama-3-70b-instruct",
+            messages=new_messages,
+            stream=True,
+        )
+        res = ""
+        for chunk in stream:
+            res += chunk.choices[0].delta.content or ""
+        return res
+
+    def get(self, request, *args, **kwargs):
+        # TODO: Graph에 대한 정보를 불러옴
+        pass
+
+    def post(self, request, *args, **kwargs):
+        # TODO: Prompt를 구성해서 LLM 호출하여 Update할 정보를 얻고, 처리한 후, DB 업데이트
+        pass
 
     def build_knowledge_graph(self, concepts):
         try:
@@ -156,11 +163,3 @@ class ExtractConceptsView(APIView):
             logger.error(f"Error building knowledge graph: {e}")
             raise
 
-
-class IncrementView(APIView):
-    def post(self, request, *args, **kwargs):
-        number = request.data.get('number')
-        if number is not None:
-            incremented_number = number + 10
-            return Response({'result': incremented_number}, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid input'}, status=status.HTTP_400_BAD_REQUEST)

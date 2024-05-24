@@ -51,10 +51,10 @@ const Header = () => {
                 <span>HOME</span>
             </HeaderBtn>
             <HeaderBtn color={isActiveTab(TabState.SUMMARY)} onClick={() => go_to_fn(TabState.SUMMARY, NAV_SUM_PAGE)}>
-                <span>SUMMARY</span>
+                <span>GRAPH</span>
             </HeaderBtn>
             <HeaderBtn color={isActiveTab(TabState.NEW)} onClick={() => go_to_fn(TabState.NEW, NAV_NEW_PAGE)}>
-                <span>NEW</span>
+                <span>KNOWLEDGE</span>
             </HeaderBtn>
         </HeaderCenter>
         
