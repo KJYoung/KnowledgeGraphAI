@@ -15,6 +15,7 @@ from friendli import Friendli
 from dotenv import load_dotenv
 from .models import Article
 from .serializers import ArticleSerializer
+from prompts import PROMPT_FOR_URL
 
 # Load environment variables from .env file
 load_dotenv()
@@ -74,7 +75,8 @@ class ExtractConceptsView(APIView):
                 history = []
 
                 # Get the summary from LLM
-                llm_result = self.chat_function(message=url, history=history)
+                url_with_prompt = PROMPT_FOR_URL.format(url=url)
+                llm_result = self.chat_function(message=url_with_prompt, history=history)
 
                 # Create and save the Article object
                 article = Article(name=url, link=url, summary=llm_result)
