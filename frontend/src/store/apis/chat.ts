@@ -25,7 +25,7 @@ export const getChats = async () => {
 };
 
 export type constructGraphPostReqType = {
-
+    url: string,
 };
 
 export const constructGraph = async (payload: constructGraphPostReqType) => {

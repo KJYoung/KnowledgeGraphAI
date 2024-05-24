@@ -59,7 +59,7 @@ const AddNewKnowledge: React.FC = () => {
     dispatch(chatActions.createNewURL({url: item}));
   };
   const handleAddtoGraph = () => {
-    dispatch(chatActions.constructGraph({}));
+    dispatch(chatActions.constructGraph({ url: input }));
   }
 
   const onClickNode = (nodeId: string) => {

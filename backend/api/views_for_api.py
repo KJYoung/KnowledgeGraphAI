@@ -12,7 +12,7 @@ from .models import Article, Concept
 from .serializers import ArticleSerializer
 from prompts import (
     CHAT_SEP, TABLE_SEP, 
-    PROMPT_FOR_URL,
+    PROMPT_FOR_URL, PROMPT_FOR_GRAPH,
     GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB,
 )
 import re
@@ -28,14 +28,22 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 ################################################################################################################################
+def pairwise(iterable):
+    a = iter(iterable)
+    return list(zip(a, a))
+
+def get_history(history):
+    new_messages = []
+    for user, chatbot in history:
+        new_messages.append({"role": "user", "content": user})
+        new_messages.append({"role": "assistant", "content": chatbot})
+    return new_messages
+################################################################################################################################
 
 # 처음 URL로부터 정보 얻고, 그에 대한 대화 나누는 View
 class ExtractConceptsView(APIView):
     def chat_function(self, message, history):
-        new_messages = []
-        for user, chatbot in history:
-            new_messages.append({"role": "user", "content": user})
-            new_messages.append({"role": "assistant", "content": chatbot})
+        new_messages = get_history(history)
         new_messages.append({"role": "user", "content": message})
 
         stream = client.chat.completions.create(
@@ -93,10 +101,7 @@ class ExtractConceptsView(APIView):
                 logger.error(f"An error occurred: {e}")
                 return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
-        else: # URL을 이미 클릭한 후, Additional Chats - Send를 클릭했을 때.
-            def pairwise(iterable):
-                a = iter(iterable)
-                return list(zip(a, a))  
+        else: # URL을 이미 클릭한 후, Additional Chats - Send를 클릭했을 때.  
             try:
                 # Check if an Article with the same link already exists
                 target_article   = Article.objects.get(link=url)
@@ -129,10 +134,7 @@ class ExtractConceptsView(APIView):
 # 그래프 관련 API 날리는 View
 class KnowledgeGraphView(APIView):
     def chat_function(self, message, history):
-        new_messages = []
-        for user, chatbot in history:
-            new_messages.append({"role": "user", "content": user})
-            new_messages.append({"role": "assistant", "content": chatbot})
+        new_messages = get_history(history)
         new_messages.append({"role": "user", "content": message})
 
         stream = client.chat.completions.create(
@@ -151,21 +153,41 @@ class KnowledgeGraphView(APIView):
 
     def post(self, request, *args, **kwargs):
         # TODO: Prompt를 구성해서 LLM 호출하여 Update할 정보를 얻고, 처리한 후, DB 업데이트
-        # 1. Prompt 구성
-        # 1-1. DB로부터 Concepts 불러오기.
-        concept_db_explain = GRAPH_EXPLAIN_DB
+        url = request.data.get('url')
+        try:
+            target_article   = Article.objects.get(link=url)
+            summary_segments = target_article.summary.split(CHAT_SEP)
+            # 1. Prompt 구성
+            # 1-1. DB로부터 Concepts 불러오기.
+            concept_db_explain = GRAPH_EXPLAIN_DB
 
-        concepts = Concept.objects.all()
-        if concepts.count() != 0:
-            for concept in concepts:
-                related_concepts = concept.related_concepts.all()
-                related_names = ', '.join([rc.name for rc in related_concepts])
-                concept_db_explain += f"{concept.name} {TABLE_SEP} {concept.description} {TABLE_SEP} {related_names}\n"
-        else:
-            concept_db_explain += GRAPH_EMPTY_DB
-        concept_db_explain += GRAPH_END_OF_EXPLAIN_DB
-        print(concept_db_explain)
-        return Response({}, status=status.HTTP_201_CREATED)
+            concepts = Concept.objects.all()
+            if concepts.count() != 0:
+                for concept in concepts:
+                    related_concepts = concept.related_concepts.all()
+                    related_names = ', '.join([rc.name for rc in related_concepts])
+                    concept_db_explain += f"{concept.name} {TABLE_SEP} {concept.description} {TABLE_SEP} {related_names}\n"
+            else:
+                concept_db_explain += GRAPH_EMPTY_DB
+            concept_db_explain += GRAPH_END_OF_EXPLAIN_DB
+            
+            # 1-2. Target Article에 대한 Chatting History를 History로 구축하기.
+            url_with_prompt = PROMPT_FOR_URL.format(url=url)
+            history = pairwise([url_with_prompt, *summary_segments])
+
+            # 1-N. Send an API call.
+            message = PROMPT_FOR_GRAPH(middle_current_db=concept_db_explain, middle_current_article=summary_segments[0])
+            llm_result = self.chat_function(message, history)
+
+            # print("THIS IS THE LLM HISTORY\n\n")
+            # print(get_history(history))
+            # print("THIS IS THE LLM MESSAGE\n\n")
+            # print(message)
+            print("THIS IS THE LLM RESULT\n\n")
+            print(llm_result)
+            return Response({}, status=status.HTTP_201_CREATED)
+        except Article.DoesNotExist:
+            return Response({'error': 'Article does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
     def build_knowledge_graph(self, concepts):
         try:
