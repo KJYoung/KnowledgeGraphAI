@@ -10,12 +10,18 @@ interface ChatState {
   chatSummary: string | null;
   chatStatus: boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
   error: AxiosError | null;
+  constructGraph: {
+    status: boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
+  }
 }
 export const initialState: ChatState = {
   chatList: [],
   chatSummary: null,
   chatStatus: undefined, 
   error: null,
+  constructGraph: {
+    status: undefined,
+  },
 };
 
 export const chatSlice = createSlice({
@@ -54,6 +60,15 @@ export const chatSlice = createSlice({
     createNewURLFailure: (state, { payload }) => {
         state.chatStatus = false;
     },
+    constructGraph: (state, action: PayloadAction<any>) => {
+        state.constructGraph.status = null;
+    },
+    constructGraphSuccess: (state, { payload }) => {
+        state.constructGraph.status = true;
+    },
+    constructGraphFailure: (state, { payload }) => {
+        state.constructGraph.status = false;
+    },
   },
 });
 export const chatActions = chatSlice.actions;
@@ -82,9 +97,18 @@ function* createNewURLSaga(action: PayloadAction<chatAPI.createNewURLPostReqType
       yield put(chatActions.createNewURLFailure(error));
     }
 }
+function* constructGraphSaga(action: PayloadAction<chatAPI.constructGraphPostReqType>) {
+    try {
+      const response: AxiosResponse = yield call(chatAPI.constructGraph, action.payload);
+      yield put(chatActions.constructGraphSuccess(response));
+    } catch (error) {
+      yield put(chatActions.constructGraphFailure(error));
+    }
+}
 
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
   yield takeLatest(chatActions.sendNewMessage, sendNewMessageSaga);
   yield takeLatest(chatActions.createNewURL, createNewURLSaga);
+  yield takeLatest(chatActions.constructGraph, constructGraphSaga);
 }

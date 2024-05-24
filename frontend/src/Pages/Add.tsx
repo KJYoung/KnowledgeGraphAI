@@ -58,6 +58,9 @@ const AddNewKnowledge: React.FC = () => {
     setInput(item);
     dispatch(chatActions.createNewURL({url: item}));
   };
+  const handleAddtoGraph = () => {
+    dispatch(chatActions.constructGraph({}));
+  }
 
   const onClickNode = (nodeId: string) => {
     console.log(`Clicked node ${nodeId}`);
@@ -106,7 +109,7 @@ const AddNewKnowledge: React.FC = () => {
           </Button>
         }
         </FormR>}
-        <Button variant="contained" color="primary" onClick={() => { }} style={{ marginTop: '1rem' }}>
+        <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '1rem' }}>
         Add to Graph!
         </Button>
         <GraphContainer>

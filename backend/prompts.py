@@ -1,3 +1,6 @@
+CHAT_SEP = "<|THISISCHATSEP|>"  # Separator for separating User & AI in the Article.Summary Field
+TABLE_SEP = "%TS%"            # Separator for separating different fields in describing Knowledge Concept DB 
+
 # prompt for summary.
 REQUEST_SUMMARY = "First, Read the following document: {url}. \
                    Then, summarize it, using the template below. \
@@ -27,6 +30,9 @@ GRAPH_MIDDLE = ""
 GRAPH_OUTPUT = "And"
 
 # middle1 : 현재 Graph Database에 대한 정보
+GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n"
+GRAPH_EMPTY_DB = f"The Database is now empty :)\n\n"
+GRAPH_END_OF_EXPLAIN_DB = f"Okay. This is the end of the database.\n\n"
 # middle2 : 현재 Target Article에 대한 정보
 PROMPT_FOR_GRAPH = lambda middle1, middle2: GRAPH_INPUT + middle1 + GRAPH_MIDDLE + middle2 + GRAPH_OUTPUT
 

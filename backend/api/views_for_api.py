@@ -1,5 +1,3 @@
-CHAT_SEP = "<|THISISCHATSEP|>"
-
 # api/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,9 +8,13 @@ import logging
 import os
 from friendli import Friendli
 from dotenv import load_dotenv
-from .models import Article
+from .models import Article, Concept
 from .serializers import ArticleSerializer
-from prompts import PROMPT_FOR_URL
+from prompts import (
+    CHAT_SEP, TABLE_SEP, 
+    PROMPT_FOR_URL,
+    GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB,
+)
 import re
 
 # Load environment variables from .env file
@@ -149,7 +151,21 @@ class KnowledgeGraphView(APIView):
 
     def post(self, request, *args, **kwargs):
         # TODO: Prompt를 구성해서 LLM 호출하여 Update할 정보를 얻고, 처리한 후, DB 업데이트
-        pass
+        # 1. Prompt 구성
+        # 1-1. DB로부터 Concepts 불러오기.
+        concept_db_explain = GRAPH_EXPLAIN_DB
+
+        concepts = Concept.objects.all()
+        if concepts.count() != 0:
+            for concept in concepts:
+                related_concepts = concept.related_concepts.all()
+                related_names = ', '.join([rc.name for rc in related_concepts])
+                concept_db_explain += f"{concept.name} {TABLE_SEP} {concept.description} {TABLE_SEP} {related_names}\n"
+        else:
+            concept_db_explain += GRAPH_EMPTY_DB
+        concept_db_explain += GRAPH_END_OF_EXPLAIN_DB
+        print(concept_db_explain)
+        return Response({}, status=status.HTTP_201_CREATED)
 
     def build_knowledge_graph(self, concepts):
         try:

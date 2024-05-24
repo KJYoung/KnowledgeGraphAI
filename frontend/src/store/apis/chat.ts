@@ -23,3 +23,12 @@ export const getChats = async () => {
     const response = await client.get(`/api/chat/`);
     return response.data;
 };
+
+export type constructGraphPostReqType = {
+
+};
+
+export const constructGraph = async (payload: constructGraphPostReqType) => {
+  const response = await client.post<constructGraphPostReqType>(`/api/graph/`, payload);
+  return response.data;
+};
