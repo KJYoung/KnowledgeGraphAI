@@ -1,0 +1,15 @@
+//get_graph_data.json에는 user 가 요구하는 superconept과 관련된 모든 데이터를 보내준다.
+
+{
+  "superconept": [
+    {
+      "name": "프로그래밍"
+    },
+    {
+      "name": "데이터베이스"
+    },
+    {
+      "name": "네트워크"
+    }
+  ]
+}
