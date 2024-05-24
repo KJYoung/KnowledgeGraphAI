@@ -16,10 +16,12 @@ from dotenv import load_dotenv
 from .models import Article
 from .serializers import ArticleSerializer
 from prompts import PROMPT_FOR_URL
+import re
 
 # Load environment variables from .env file
 load_dotenv()
 FRIENDLI_TOKEN = os.getenv('FRIENDLI_TOKEN')
+print(FRIENDLI_TOKEN)
 client = Friendli(token=FRIENDLI_TOKEN)
 
 # Load spaCy model
@@ -78,6 +80,10 @@ class ExtractConceptsView(APIView):
                 url_with_prompt = PROMPT_FOR_URL.format(url=url)
                 llm_result = self.chat_function(message=url_with_prompt, history=history)
 
+                # Extract the keywords from LLM result
+                concepts = self.extract_concepts(llm_result)
+
+
                 # Create and save the Article object
                 article = Article(name=url, link=url, summary=llm_result)
                 article.save()
@@ -125,10 +131,15 @@ class ExtractConceptsView(APIView):
                 return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def extract_concepts(self, text):
+        # try:
+        #     doc = nlp(text)
+        #     concepts = [chunk.text for chunk in doc.noun_chunks]
+        #     return concepts
         try:
-            doc = nlp(text)
-            concepts = [chunk.text for chunk in doc.noun_chunks]
-            return concepts
+            pattern = re.compile(r"\d+\.\s+\*\*(.*?)\*\*:")
+            keywords = pattern.findall(text)
+            return keywords
+
         except Exception as e:
             logger.error(f"Error extracting concepts: {e}")
             raise
