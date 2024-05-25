@@ -9,9 +9,9 @@ class AbstractTag(models.Model):
         abstract = True
 
 class Concept(AbstractTag):
-    priority = models.IntegerField()
+    priority = models.IntegerField(blank= True, default=0)
+    comp_score = models.IntegerField(blank= True, default=0)
     description = models.TextField()
-    comp_score = models.IntegerField()
 
     prior_concepts = models.ManyToManyField('self', symmetrical=False, related_name='prerequisites', blank=True)
     related_concepts = models.ManyToManyField('self', symmetrical=False, related_name='related_to', blank=True)

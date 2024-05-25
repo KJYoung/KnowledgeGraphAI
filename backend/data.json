@@ -1,0 +1,72 @@
+{
+  "super_concepts": [
+    {
+      "name": "Film Industry",
+      "concepts": [
+        {
+          "name": "Cinematography",
+          "description": "The art and technique of capturing moving images on film or digital media.",
+          "related_concepts": [
+            "Filmmaking",
+            "Visual Storytelling",
+            "Camera Techniques",
+            "Lighting",
+            "Film Stock",
+            "Digital Formats"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Visual Storytelling",
+      "concepts": [
+        {
+          "name": "Composition",
+          "description": "The arrangement of visual elements within a frame, including placement of subjects, objects, and negative space.",
+          "related_concepts": [
+            "Aspect Ratio",
+            "Framing",
+            "Camera Angles",
+            "Dolly Shot"
+          ]
+        },
+        {
+          "name": "Aspect Ratio",
+          "description": "The proportional relationship between the width and height of an image, affecting the composition and framing of a shot.",
+          "related_concepts": [
+            "Composition",
+            "Framing",
+            "Shot Composition"
+          ]
+        },
+        {
+          "name": "Depth of Field",
+          "description": "The area in focus in front of and behind a subject, controlled by aperture, focal length, and camera placement.",
+          "related_concepts": [
+            "Camera Techniques",
+            "Focus",
+            "Aperture"
+          ]
+        },
+        {
+          "name": "Key Lighting",
+          "description": "The primary light source in a scene, used to create the overall mood and atmosphere.",
+          "related_concepts": [
+            "Lighting",
+            "Mood",
+            "Atmosphere"
+          ]
+        },
+        {
+          "name": "Dolly Shot",
+          "description": "A camera movement that involves moving the camera towards or away from a subject, often used to create a sense of intimacy or drama.",
+          "related_concepts": [
+            "Camera Movement",
+            "Composition",
+            "Shot Composition"
+          ]
+        }
+      ]
+    }
+  ]
+}
