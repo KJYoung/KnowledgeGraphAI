@@ -7,9 +7,9 @@ import { chatActions } from '../store/slices/chat';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { ListView } from '../Components/ChatList';
 
-const transformString = (input: string) : MessageTuple[] => {
+export const transformString = (input: string, rev?: boolean) : MessageTuple[] => {
     const parts = input.split('<|THISISCHATSEP|>');
-    const keys = ["AI", "User"];
+    const keys = rev ? ["User", "AI"]: ["AI", "User"];
     return parts.map((part, index) => [keys[index % keys.length], part]);
 };
 

@@ -4,23 +4,38 @@ import styled from '@emotion/styled';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { chatActions } from '../store/slices/chat';
 import { useDispatch } from 'react-redux';
+import { Chat } from './Chat';
+import { transformString } from '../Pages/Add';
 
 const ChatRoom = ({ superConcept } : {superConcept: string}) => {
   const dispatch = useDispatch();
-  const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
+  const [curRoom, setCurRoom] = useState<number>(-1);
   const chatLists = useAppSelector((state) => state.chat.getGraphChatRoom.graphChatRooms);
+  const chatDetails = useAppSelector((state) => state.chat.getGraphChatDetails.chattingHistory);
+  const chatMsgStatus = useAppSelector((state) => state.chat.createNewGraphChatMsg.status);
 
   const handleSendMessage = () => {
     if (input.trim()) {
-      setMessages([...messages, input]);
+      console.log({chatRoomId: curRoom, message: input});
+      dispatch(chatActions.createNewGraphChatMsg({chatRoomId: curRoom, message: input}));
       setInput('');
+      
     }
   };
 
   useEffect(() => {
     dispatch(chatActions.getGraphChatRooms({}));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(chatActions.getGraphChatDetails({ chatRoomId: curRoom }));
+  }, [dispatch, chatMsgStatus, curRoom]);
+
+  const handleItemClick = (id: number) => {
+    setCurRoom(id);
+    dispatch(chatActions.getGraphChatDetails({ chatRoomId: id }));
+  };
 
   return (
     <ChatContainer>
@@ -35,9 +50,9 @@ const ChatRoom = ({ superConcept } : {superConcept: string}) => {
         </Button>
         <Divider />
         <List>
-          {chatLists && chatLists.map((cL: any) => <ListItem button>
-            <ListItemText key={cL.name} primary={cL.name} />
-          </ListItem>)}
+          {chatLists && chatLists.map((cL: any) => <StyledListItem key={cL.id} onClick={() => handleItemClick(parseInt(cL.id))} isSelected={curRoom === cL.id}>
+            <ListItemText primary={cL.name} />
+          </StyledListItem>)}
         </List>
       </Sidebar>
       <MainChatArea>
@@ -45,11 +60,7 @@ const ChatRoom = ({ superConcept } : {superConcept: string}) => {
           <Typography variant="h6">Chat Room</Typography>
         </ChatHeader>
         <ChatWindow>
-          {messages.map((message, index) => (
-            <ChatMessage key={index} isUser={index % 2 === 0}>
-              {message}
-            </ChatMessage>
-          ))}
+          {chatDetails && <Chat messages={transformString(chatDetails, true)} rev={true} />}
         </ChatWindow>
         <ChatInputArea>
           <TextField
@@ -102,14 +113,6 @@ const ChatWindow = styled(Box)`
   background-color: #f5f5f5;
 `;
 
-const ChatMessage = styled(Box)<{ isUser: boolean }>`
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${(props) => (props.isUser ? '#e0f7fa' : '#fff')};
-  align-self: ${(props) => (props.isUser ? 'flex-end' : 'flex-start')};
-`;
-
 const ChatInputArea = styled(Box)`
   display: flex;
   padding: 16px;
@@ -118,5 +121,14 @@ const ChatInputArea = styled(Box)`
   > :first-of-type {
     flex: 1;
     margin-right: 16px;
+  }
+`;
+
+const StyledListItem = styled(({ isSelected, ...rest } : any) => <ListItem {...rest} />)`
+  cursor: pointer;
+  background-color: ${({ isSelected }) => (isSelected ? '#f0f0f0' : 'inherit')};
+  color: ${({ isSelected }) => (isSelected ? 'blue' : 'inherit')};
+  &:hover {
+    background-color: #e0e0e0;
   }
 `;

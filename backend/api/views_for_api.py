@@ -22,11 +22,7 @@ import numpy as np
 
 
 # OpenAI for Embedding
-
 client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-
-
-
 
 # Load environment variables from .env file
 load_dotenv()
@@ -331,7 +327,6 @@ class KnowledgeGraphChatListView(APIView):
         # Response type = [{"name":"article1", "id":]
         
         super_concept_id = request.GET.get('superConcept')
-        print(super_concept_id)
         try:
             if super_concept_id == '-1':
                 chat_rooms = UserChattingRoom.objects.all()
@@ -374,9 +369,10 @@ class KnowledgeGraphChatDetailView(APIView):
         res = ""
         chat_name = ""
         for chunk in stream:
-            res += chunk.choices[0].delta.content['response'] or ""
-            chat_name += chunk.choices[0].delta.content['chat_name'] or ""
-        return res, chat_name
+            res += chunk.choices[0].delta.content or ""
+        
+        json_data = json.loads(res)
+        return json_data['response'], json_data['chat_name']
 
     def check_vector_similarity(self, vector1, vector2):
         return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
@@ -385,7 +381,7 @@ class KnowledgeGraphChatDetailView(APIView):
         # calculate the similarity between the vector_representation and the vector_representation of each concept
         similarity_scores = []
         for concept in concepts:
-            similarity_score = self.check_vector_similarity(vector_representation, concept.vector_representation)
+            similarity_score = self.check_vector_similarity(vector_representation, np.array(list(concept.vector_representation)))
             similarity_scores.append(similarity_score)
         # sort the concepts based on the similarity scores
         sorted_concepts = [concept for _, concept in sorted(zip(similarity_scores, concepts), reverse=True)]
@@ -394,7 +390,7 @@ class KnowledgeGraphChatDetailView(APIView):
     
     def get(self, request, *args, **kwargs):
         #find with chat_room id
-        id = request.data.get('id')
+        id = request.GET.get('id')
         try:
             chat_room = UserChattingRoom.objects.get(id=id)
             chat_history = chat_room.chat_history
@@ -407,17 +403,23 @@ class KnowledgeGraphChatDetailView(APIView):
     ## user가 대화를 거는 경우
     def post(self, request, *args, **kwargs):
         message = request.data.get('message')
-        id = request.data.get('id')
+        id = request.data.get('chatRoomId')
         if not message or not id:
             return Response({'error': 'Message, Chat ID, and Superconcept ID are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get the chat history by chat_id
-        try :
+        try:
             chat_room = UserChattingRoom.objects.get(id=id)
         except UserChattingRoom.DoesNotExist:
             return Response({'error': 'Chat history does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        
         history = chat_room.chat_history # 이전에 대화했었던 대화 기록을 가져옴.
-        superconcept_id = chat_room.super_concept.id
+        if chat_room.super_concept is not None:
+            superconcept_id = chat_room.super_concept.id
+        else:
+            superconcept_id = -1
+
+        print("superconcept id ", superconcept_id)
         
         # Embedding the user's message
         response = client_openai.embeddings.create(
@@ -428,8 +430,11 @@ class KnowledgeGraphChatDetailView(APIView):
         # select the K concepts based on the similarity scores
         K = 5
         vector_representation = response.data[0].embedding
-        superconcept = SuperConcept.objects.get(id=superconcept_id)
-        concepts = superconcept.concepts.all()
+        if superconcept_id == -1:
+            concepts = Concept.objects.all()
+        else:
+            superconcept = SuperConcept.objects.get(id=superconcept_id)
+            concepts = superconcept.concepts.all()
         #select
         if(K < len(concepts)):
             selected_concepts = self.select_K_concepts(concepts, K, vector_representation)
@@ -449,14 +454,20 @@ class KnowledgeGraphChatDetailView(APIView):
             
         history_processed = get_history(history)
         
-        prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE + history_processed + CHAT_OUTPUT_TYPE + CHAT_END
+        prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE 
+        for h in history_processed:
+            prompt += h
+        prompt += CHAT_OUTPUT_TYPE + CHAT_END
             
         (llm_result, chat_name) = self.chat_function(message, prompt)
         print("llm_result: ", llm_result)
         print("chat_name: ", chat_name)
 
         # Update the chat history
-        chat_room.chat_history += f"{message}\n{llm_result}\n"
+        if chat_room.chat_history == "":
+            chat_room.chat_history += f"{message}{CHAT_SEP}{llm_result}\n"
+        else:
+            chat_room.chat_history += f"{CHAT_SEP}{message}{CHAT_SEP}{llm_result}\n"
         chat_room.name = chat_name
         chat_room.save()
         

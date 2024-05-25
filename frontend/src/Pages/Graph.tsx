@@ -262,9 +262,6 @@ const ModalContent = styled.div`
   outline: none;
 `;
 
-const FullDiv = styled.div`
-  width: 100%;
-`;
 
 // Styled-components
 const FlexR = styled.div`

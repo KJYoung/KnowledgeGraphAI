@@ -35,13 +35,13 @@ export const createNewGraphChatRooms = async (payload: createNewGraphChatRoomsRe
   return response.data;
 };
 
-export const getGraphChatDetails = async () => {
-  const response = await client.get(`/api/graph_chat_detail/`);
+export const getGraphChatDetails = async (payload: getGraphChatDetailsReqType) => {
+  const response = await client.get(`/api/graph_chat_detail/?id=${encodeURIComponent(payload.chatRoomId)}`);
   return response.data;
 }; 
 
 export const createNewGraphChatMsg = async (payload: createNewGraphChatMsgReqType) => {
-  const response = await client.post<createNewGraphChatMsgReqType>(`/api/graph_chat_list/`, payload);
+  const response = await client.post<createNewGraphChatMsgReqType>(`/api/graph_chat_detail/`, payload);
   return response.data;
 };
 

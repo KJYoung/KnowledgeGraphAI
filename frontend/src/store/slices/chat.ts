@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError, AxiosResponse } from 'axios';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import * as chatAPI from '../apis/chat';
+import { MessageTuple } from '../../Components/Chat';
 
 type Status = boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
 
@@ -34,7 +35,7 @@ interface ChatState {
     status: Status,
   },
   getGraphChatDetails: {
-    chattingHistory: string,
+    chattingHistory: string | null,
     status: Status,
   },
   createNewGraphChatMsg: {
@@ -69,7 +70,7 @@ export const initialState: ChatState = {
     status: undefined,
   },
   getGraphChatDetails: {
-    chattingHistory: '',
+    chattingHistory: null,
     status: undefined,
   },
   createNewGraphChatMsg: {
@@ -184,11 +185,12 @@ export const chatSlice = createSlice({
     },
     getGraphChatDetailsFailure: (state, { payload }) => {
         state.getGraphChatDetails.status = false;
-        state.getGraphChatDetails.chattingHistory = '';
+        state.getGraphChatDetails.chattingHistory = null;
     },
     getGraphChatDetailsSuccess: (state, { payload }) => {
+      console.log(payload)
         state.getGraphChatDetails.status = true;
-        state.getGraphChatDetails.chattingHistory = payload.abcd;
+        state.getGraphChatDetails.chattingHistory = payload.chat_history;
     },
     createNewGraphChatMsg: (state, action: PayloadAction<chatAPI.createNewGraphChatMsgReqType>) => {
       state.createNewGraphChatMsg.status = null;
@@ -275,6 +277,22 @@ function* createNewGraphChatRoomsSaga(action: PayloadAction<chatAPI.createNewGra
     yield put(chatActions.createNewGraphChatRoomsFailure(error));
   }
 }
+function* getGraphChatDetailsSaga(action: PayloadAction<chatAPI.getGraphChatDetailsReqType>) {
+  try {
+    const response: AxiosResponse = yield call(chatAPI.getGraphChatDetails, action.payload);
+    yield put(chatActions.getGraphChatDetailsSuccess(response));
+  } catch (error) {
+    yield put(chatActions.getGraphChatDetailsFailure(error));
+  }
+}
+function* createNewGraphChatMsgSaga(action: PayloadAction<chatAPI.createNewGraphChatMsgReqType>) {
+  try {
+    const response: AxiosResponse = yield call(chatAPI.createNewGraphChatMsg, action.payload);
+    yield put(chatActions.createNewGraphChatMsgSuccess(response));
+  } catch (error) {
+    yield put(chatActions.createNewGraphChatMsgFailure(error));
+  }
+}
 
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
@@ -286,4 +304,6 @@ export default function* chatSaga() {
   yield takeLatest(chatActions.editGraphNode, editGraphNodeSaga);
   yield takeLatest(chatActions.getGraphChatRooms, getGraphChatRoomsSaga);
   yield takeLatest(chatActions.createNewGraphChatRooms, createNewGraphChatRoomsSaga);
+  yield takeLatest(chatActions.createNewGraphChatMsg, createNewGraphChatMsgSaga);
+  yield takeLatest(chatActions.getGraphChatDetails, getGraphChatDetailsSaga);
 }

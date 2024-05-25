@@ -5,6 +5,7 @@ export type MessageTuple = [string, string];
 
 interface ChatProps {
   messages: MessageTuple[];
+  rev?: boolean;
 }
 
 const parseMessage = (message: string) => {
@@ -15,11 +16,11 @@ const parseMessage = (message: string) => {
 	return newlineReplaced;
 };
 
-export const Chat: React.FC<ChatProps> = ({ messages }) => {
+export const Chat: React.FC<ChatProps> = ({ messages, rev }) => {
   return (
     <ChatContainer>
       {messages.map((msg, index) => (
-        <ChatBubble key={index} isUser={index % 2 !== 0}>
+        <ChatBubble key={index} isUser={((index + (rev ? 1 : 0)) % 2 !== 0) }>
           <strong>{msg[0]}</strong>
           <br />
           <ChatSpan dangerouslySetInnerHTML={{ __html: parseMessage(msg[1]) }} />
