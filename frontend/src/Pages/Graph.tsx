@@ -9,30 +9,17 @@ import { graphConfig } from '../utils/d3GraphConfig';
 import { ListView } from '../Components/ChatList';
 import { Node } from '../store/apis/chat';
 
-// Parse the graph data
-//   const graph = JSON.parse(data.graph);
-
-//   const formattedGraphData = {
-// 	nodes: graph.nodes.map((node: any) => ({
-// 	  id: node.id || 'undefined_node'
-// 	})),
-// 	links: graph.links.map((link: any) => ({
-// 	  source: link.source || 'undefined_source',
-// 	  target: link.target || 'undefined_target'
-// 	}))
-//   };
-
-//   setGraphData(formattedGraphData);
+const ALL_FILTER = "ALL";
 
 const determineNodeColor = (node: any, mode: number): string => {
   // Adjust the logic based on your comp_score thresholds and colors
-  if (mode == 1){
+  if (mode === 1){
     if (node.comp_score > 80) return 'green';
     if (node.comp_score > 50) return 'yellow';
     if (node.comp_score > 20) return 'orange';
     return 'red';
   }
-  else if(mode == 2){
+  else if(mode === 2){
     if (node.priority > 8) return 'green';
     if (node.priority > 5) return 'yellow';
     if (node.priority > 2) return 'orange';
@@ -47,7 +34,7 @@ const determineNodeColor = (node: any, mode: number): string => {
 const GraphVisualization: React.FC = () => {
   const dispatch = useDispatch();
   
-  const [superConcept, setSuperConcept] = useState<string>("");
+  const [superConcept, setSuperConcept] = useState<string>(ALL_FILTER);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -98,13 +85,13 @@ const GraphVisualization: React.FC = () => {
       dispatch(chatActions.getGraph({}));
     }
   }, [editNodeStatus, dispatch]);
-  useEffect(() => {
-    dispatch(chatActions.getGraph({ superConcept: superConcept }));
-  }, [superConcept, dispatch]);
 
   const handleListItemClick = (item: string) => {
     setSuperConcept(item);
-    dispatch(chatActions.createNewURL({url: item}));
+    if(item === ALL_FILTER)
+      dispatch(chatActions.getGraph({ }));
+    else
+      dispatch(chatActions.getGraph({ superConcept: item }));
   };
 
   const onClickNode = (nodeId: string) => {
@@ -241,7 +228,7 @@ const GraphVisualization: React.FC = () => {
         <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
         {/* <ListViewContainer> */}
           <strong>-- SuperConcepts --</strong>
-          {superConcepts && <ListView items={superConcepts} onItemClick={handleListItemClick} currentItem={superConcept}/>}
+          {superConcepts && <ListView items={[ALL_FILTER, ...superConcepts]} onItemClick={handleListItemClick} currentItem={superConcept}/>}
         {/* </ListViewContainer> */}
         </Paper>
       </MainContent>
