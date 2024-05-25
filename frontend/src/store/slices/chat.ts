@@ -19,6 +19,10 @@ interface ChatState {
     graph: any,
     status: Status,
   },
+  superConcepts: {
+    superConcepts: any,
+    status: Status,
+  },
 }
 
 export const initialState: ChatState = {
@@ -31,6 +35,10 @@ export const initialState: ChatState = {
   },
   getGraph: {
     graph: null,
+    status: undefined,
+  },
+  superConcepts: {
+    superConcepts: null,
     status: undefined,
   }
 };
@@ -49,7 +57,6 @@ export const chatSlice = createSlice({
         state.chatStatus = null;
     },
     getChatsSuccess: (state, { payload }) => {
-        console.log(payload)
         state.chatList = payload.chats;
         state.chatStatus = true;
     },
@@ -90,13 +97,23 @@ export const chatSlice = createSlice({
         state.getGraph.status = null;
     },
     getGraphSuccess: (state, { payload }) => {
-        console.log(payload)
         state.getGraph.graph = payload.graph;
         state.getGraph.status = true;
     },
     getGraphFailure: (state, { payload }) => {
         state.getGraph.graph = null;
         state.getGraph.status = false;
+    },
+    getSuperConcept: state => {
+        state.superConcepts.status = null;
+    },
+    getSuperConceptSuccess: (state, { payload }) => {
+        state.superConcepts.superConcepts = payload.super_concepts;
+        state.superConcepts.status = true;
+    },
+    getSuperConceptFailure: (state, { payload }) => {
+        state.superConcepts.superConcepts = null;
+        state.superConcepts.status = false;
     },
   },
 });
@@ -116,6 +133,14 @@ function* getGraphSaga() {
       yield put(chatActions.getGraphSuccess(response));
     } catch (error) {
       yield put(chatActions.getGraphFailure(error));
+    }
+}
+function* getSuperConceptSaga() {
+    try {
+      const response: AxiosResponse = yield call(chatAPI.getSuperConcept);
+      yield put(chatActions.getSuperConceptSuccess(response));
+    } catch (error) {
+      yield put(chatActions.getSuperConceptFailure(error));
     }
 }
 function* sendNewMessageSaga(action: PayloadAction<chatAPI.sendNewMessagePostReqType>) {
@@ -146,6 +171,7 @@ function* constructGraphSaga(action: PayloadAction<chatAPI.constructGraphPostReq
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
   yield takeLatest(chatActions.getGraph, getGraphSaga);
+  yield takeLatest(chatActions.getSuperConcept, getSuperConceptSaga);
   yield takeLatest(chatActions.sendNewMessage, sendNewMessageSaga);
   yield takeLatest(chatActions.createNewURL, createNewURLSaga);
   yield takeLatest(chatActions.constructGraph, constructGraphSaga);

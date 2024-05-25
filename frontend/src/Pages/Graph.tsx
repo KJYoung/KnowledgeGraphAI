@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Graph } from 'react-d3-graph';
 import styled, { keyframes } from 'styled-components';
 import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress } from '@mui/material';
-import { Chat, MessageTuple } from '../Components/Chat';
 import { useDispatch } from 'react-redux';
 import { chatActions } from '../store/slices/chat';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -27,34 +26,21 @@ import { ListView } from '../Components/ChatList';
 const GraphVisualization: React.FC = () => {
   const dispatch = useDispatch();
   
-  const chatLists = useAppSelector((state) => state.chat.chatList);
-//   const graphData = useAppSelector((state) => state.getGraph.graph);
+  const [superConcept, setSuperConcept] = useState<string>("");
+  const superConcepts = useAppSelector((state) => state.chat.superConcepts.superConcepts);
   const graphData = useAppSelector((state) => state.chat.getGraph.graph);
-  console.log(graphData)
 
-  const [input, setInput] = useState<string>('');
-  const [chat, setChat] = useState<string>('');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
-  // const [article, setArticle] = useState<Article | null>(null); // Add this line
 
   useEffect(() => {
     dispatch(chatActions.getGraph());
+    dispatch(chatActions.getSuperConcept());
   }, [dispatch]);
 
-  const handleExtractConcepts = async () => {
-    dispatch(chatActions.createNewURL({url: input}));
-  };
-  const handleAdditionalChats = async () => {
-    setChat("");
-    dispatch(chatActions.sendNewMessage({url: input, message: chat}));
-  };
   const handleListItemClick = (item: string) => {
-    setInput(item);
+    setSuperConcept(item);
     dispatch(chatActions.createNewURL({url: item}));
   };
-  const handleAddtoGraph = () => {
-    dispatch(chatActions.constructGraph({ url: input }));
-  }
 
   const onClickNode = (nodeId: string) => {
     console.log(`Clicked node ${nodeId}`);
@@ -106,7 +92,7 @@ const GraphVisualization: React.FC = () => {
         <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
         {/* <ListViewContainer> */}
           <strong>-- SuperConcepts --</strong>
-          <ListView items={chatLists} onItemClick={handleListItemClick} />
+          {superConcepts && <ListView items={superConcepts} onItemClick={handleListItemClick} />}
         {/* </ListViewContainer> */}
         </Paper>
       </MainContent>
