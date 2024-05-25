@@ -28,8 +28,13 @@ export type constructGraphPostReqType = {
     url: string,
 };
 
-export const getGraph = async () => {
-  const response = await client.get(`/api/graph/`);
+export type getGraphReqType = {
+  superConcept?: string,
+};
+
+export const getGraph = async (payload: getGraphReqType) => {
+  const queryString = payload.superConcept ? `?superConcept=${encodeURIComponent(payload.superConcept)}` : '';
+  const response = await client.get(`/api/graph/${queryString}`);
   return response.data;
 };
 

@@ -60,7 +60,6 @@ const GraphVisualization: React.FC = () => {
     }
   };
   const superConcepts = useAppSelector((state) => state.chat.superConcepts.superConcepts);
-  //const graphData = useAppSelector((state) => state.chat.getGraph.graph);
 
   const rawGraphData = useAppSelector((state) => state.chat.getGraph.graph);
   const graphData = rawGraphData ? {
@@ -74,14 +73,17 @@ const GraphVisualization: React.FC = () => {
   const [zoomLevel, setZoomLevel] = useState<number>(1);
 
   useEffect(() => {
-    dispatch(chatActions.getGraph());
+    dispatch(chatActions.getGraph({}));
     dispatch(chatActions.getSuperConcept());
   }, [dispatch]);
   useEffect(() => {
     if(editNodeStatus){
-      dispatch(chatActions.getGraph());
+      dispatch(chatActions.getGraph({}));
     }
   }, [editNodeStatus, dispatch]);
+  useEffect(() => {
+    dispatch(chatActions.getGraph({ superConcept: superConcept }));
+  }, [superConcept, dispatch]);
 
   const handleListItemClick = (item: string) => {
     setSuperConcept(item);

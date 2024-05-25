@@ -3,7 +3,7 @@ from .models import Concept, SuperConcept, Article
 
 @admin.register(Concept)
 class ConceptAdmin(admin.ModelAdmin):
-    list_display = ('name', 'priority', 'created_at', 'modified_at')
+    list_display = ('pk', 'name', 'priority', 'created_at', 'modified_at')
     search_fields = ('name', 'description')
 
 @admin.register(SuperConcept)

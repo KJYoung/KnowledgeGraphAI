@@ -34,8 +34,8 @@ const AddNewKnowledge: React.FC = () => {
     dispatch(chatActions.createNewURL({url: input}));
   };
   const handleAdditionalChats = async () => {
-    setChat("");
     dispatch(chatActions.sendNewMessage({url: input, message: chat}));
+    setChat("");
   };
   const handleListItemClick = (item: string) => {
     setInput(item);

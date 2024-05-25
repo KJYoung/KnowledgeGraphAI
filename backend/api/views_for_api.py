@@ -148,7 +148,17 @@ class KnowledgeGraphView(APIView):
         return res
 
     def get(self, request, *args, **kwargs):
-        concepts = Concept.objects.all()
+        super_concept_name = request.GET.get('superConcept')
+        
+        if super_concept_name:
+            try:
+                super_concept = SuperConcept.objects.get(name=super_concept_name)
+                concepts = super_concept.concepts.all()
+            except SuperConcept.DoesNotExist:
+                return Response({'error': 'SuperConcept does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            concepts = Concept.objects.all()
+        concept_pks = list(concepts.values_list('pk', flat=True))
         nodes, edges = [], []
         
         for concept in concepts:
@@ -161,7 +171,7 @@ class KnowledgeGraphView(APIView):
             })
             
             for related_concept in concept.related_concepts.all():
-                if concept.id < related_concept.id:  # Avoid duplicating edges in an undirected graph
+                if concept.id < related_concept.id and related_concept.id in concept_pks:  # Avoid duplicating edges in an undirected graph
                     edges.append({
                         "source": concept.id,
                         "target": related_concept.id
@@ -169,6 +179,7 @@ class KnowledgeGraphView(APIView):
         
         graph_data = { "nodes": nodes, "links": edges }
 
+        print(graph_data)
         # data = request.data
         # super_concepts = data['super_concepts']
         # user_concepts = []

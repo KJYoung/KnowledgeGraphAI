@@ -99,7 +99,7 @@ export const chatSlice = createSlice({
     constructGraphFailure: (state, { payload }) => {
         state.constructGraph.status = false;
     },
-    getGraph: state => {
+    getGraph: (state, action: PayloadAction<chatAPI.getGraphReqType>) => {
         state.getGraph.status = null;
     },
     getGraphSuccess: (state, { payload }) => {
@@ -142,9 +142,9 @@ function* getChatsSaga() {
       yield put(chatActions.getChatsFailure(error));
     }
 }
-function* getGraphSaga() {
+function* getGraphSaga(action: PayloadAction<chatAPI.getGraphReqType>) {
     try {
-      const response: AxiosResponse = yield call(chatAPI.getGraph);
+      const response: AxiosResponse = yield call(chatAPI.getGraph, action.payload);
       yield put(chatActions.getGraphSuccess(response));
     } catch (error) {
       yield put(chatActions.getGraphFailure(error));
