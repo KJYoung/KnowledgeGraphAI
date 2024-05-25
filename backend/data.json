@@ -1,69 +1,95 @@
 {
   "super_concepts": [
     {
-      "name": "Film Industry",
+      "name": "Transformers",
       "concepts": [
         {
-          "name": "Cinematography",
-          "description": "The art and technique of capturing moving images on film or digital media.",
+          "name": "Tokens",
+          "description": "input elements processed by transformers",
           "related_concepts": [
-            "Filmmaking",
-            "Visual Storytelling",
-            "Camera Techniques",
-            "Lighting",
-            "Film Stock",
-            "Digital Formats"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Visual Storytelling",
-      "concepts": [
-        {
-          "name": "Composition",
-          "description": "The arrangement of visual elements within a frame, including placement of subjects, objects, and negative space.",
-          "related_concepts": [
-            "Aspect Ratio",
-            "Framing",
-            "Camera Angles",
-            "Dolly Shot"
+            "Embeddings",
+            "Encoding-Decoding"
           ]
         },
         {
-          "name": "Aspect Ratio",
-          "description": "The proportional relationship between the width and height of an image, affecting the composition and framing of a shot.",
+          "name": "Embeddings",
+          "description": "process of converting input tokens into numerical vectors",
           "related_concepts": [
-            "Composition",
-            "Framing",
-            "Shot Composition"
+            "Tokens",
+            "Token Embeddings"
           ]
         },
         {
-          "name": "Depth of Field",
-          "description": "The area in focus in front of and behind a subject, controlled by aperture, focal length, and camera placement.",
+          "name": "Self-Attention",
+          "description": "mechanism that allows transformers to model complex relationships between input elements",
           "related_concepts": [
-            "Camera Techniques",
-            "Focus",
-            "Aperture"
+            "Encoding-Decoding",
+            "Query",
+            "Key",
+            "Value"
           ]
         },
         {
-          "name": "Key Lighting",
-          "description": "The primary light source in a scene, used to create the overall mood and atmosphere.",
+          "name": "Encoding-Decoding",
+          "description": "process by which transformers convert input sequences into output sequences",
           "related_concepts": [
-            "Lighting",
-            "Mood",
-            "Atmosphere"
+            "Tokens",
+            "Self-Attention",
+            "Positional Encoding",
+            "Layer Normalization"
           ]
         },
         {
-          "name": "Dolly Shot",
-          "description": "A camera movement that involves moving the camera towards or away from a subject, often used to create a sense of intimacy or drama.",
+          "name": "Token Embeddings",
+          "description": "process of converting input tokens into numerical vectors",
           "related_concepts": [
-            "Camera Movement",
-            "Composition",
-            "Shot Composition"
+            "Embeddings",
+            "Positional Encoding"
+          ]
+        },
+        {
+          "name": "Positional Encoding",
+          "description": "technique used to preserve the order of input tokens",
+          "related_concepts": [
+            "Token Embeddings",
+            "Encoding-Decoding"
+          ]
+        },
+        {
+          "name": "Layer Normalization",
+          "description": "technique used to stabilize the training of transformers",
+          "related_concepts": [
+            "Encoding-Decoding",
+            "Query",
+            "Key",
+            "Value"
+          ]
+        },
+        {
+          "name": "Query",
+          "description": "sub-component of self-attention mechanism",
+          "related_concepts": [
+            "Self-Attention",
+            "Key",
+            "Value"
+          ]
+        },
+        {
+          "name": "Key",
+          "description": "sub-component of self-attention mechanism",
+          "related_concepts": [
+            "Self-Attention",
+            "Query",
+            "Value"
+          ]
+        },
+        {
+          "name": "Value",
+          "description": "sub-component of self-attention mechanism",
+          "related_concepts": [
+            "Self-Attention",
+            "Query",
+            "Key"
           ]
         }
       ]
