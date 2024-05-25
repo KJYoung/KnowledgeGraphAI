@@ -192,12 +192,12 @@ const GraphVisualization: React.FC = () => {
             </Box>}
             </GraphContainer>
           </Paper>
+          </>
+          }
           <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05, height: "100%" }}>
             <strong>-- SuperConcepts --</strong>
             {superConcepts && <ListView items={[ALL_FILTER, ...superConcepts]} onItemClick={handleListItemClick} currentItem={superConcept}/>}
           </Paper>
-          </>
-          }
         </FlexR>
       </MainContent>
       <Modal

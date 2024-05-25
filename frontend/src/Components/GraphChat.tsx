@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, List, ListItem, ListItemText, Paper, TextField, Button, Typography, Divider } from '@mui/material';
 import styled from '@emotion/styled';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 const ChatRoom: React.FC = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
+  const chatLists = useAppSelector((state) => state.chat.getGraphChatRoom.graphChatRooms);
 
   const handleSendMessage = () => {
     if (input.trim()) {
@@ -21,15 +23,9 @@ const ChatRoom: React.FC = () => {
         </Typography>
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemText primary="Contact 1" />
-          </ListItem>
-          <ListItem button>
-            <ListItemText primary="Contact 2" />
-          </ListItem>
-          <ListItem button>
-            <ListItemText primary="Contact 3" />
-          </ListItem>
+          {chatLists && chatLists.map((cL: any) => <ListItem button>
+            <ListItemText key={cL} primary={cL} />
+          </ListItem>)}
         </List>
       </Sidebar>
       <MainChatArea>

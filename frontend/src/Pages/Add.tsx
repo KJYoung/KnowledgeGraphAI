@@ -83,10 +83,8 @@ const AddNewKnowledge: React.FC = () => {
           </FormR>}
         </Paper>
         <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
-        {/* <ListViewContainer> */}
           <strong>-- Past Chats --</strong>
           <ListView items={chatLists} onItemClick={handleListItemClick} currentItem={input}/>
-        {/* </ListViewContainer> */}
         </Paper>
       </MainContent>
     </Container>
