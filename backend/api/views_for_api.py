@@ -198,6 +198,9 @@ class KnowledgeGraphView(APIView):
                 data = json.loads(json_string)
                 # Print the extracted JSON data
                 # print(json.dumps(data, indent=2))
+                # store the data in the data.json file, if the file path does not exist, it will be created.
+                with open('data.json', 'w') as f:
+                    json.dump(data, f, indent=2)
             else:
                 return Response({'error': "No JSON data found"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -211,37 +214,40 @@ class KnowledgeGraphView(APIView):
                 else:
                     new_super_concept = SuperConcept.objects.get(name=super_concept_name)
                 
-            for concept in super_concept['concepts']:
-                #마찬가지로 이미 있는 concept인지 확인 후 없으면 새롭게 생성.
-                concept_name = concept['name']
-                #related_concepts 는 이미 있는 concept일수도 있고 새롭게 만들어지는 concept일 수도 있음.
-                related_concepts = concept['related_concepts']
-                if not Concept.objects.filter(name=concept_name).exists():
-                    new_concept = Concept.objects.create(name=concept_name, description=concept['description'], priority=concept.get('priority', 0), comp_score=concept.get('comp_score', 0))
-                    # for related_concept_name in related_concepts:
-                    #     if not Concept.objects.filter(name=related_concept_name).exists():
-                    #         new_related_concept = Concept(name=related_concept_name)
-                    #         new_related_concept.save()
-                    #         new_concept.related_concepts.add(new_related_concept)
-                    #     else:
-                    #         existing_concept = Concept.objects.get(name=related_concept_name)
-                    #         new_concept.related_concepts.add(existing_concept)
-                    new_super_concept.concepts.add(new_concept)
-                else:
-                    existing_concept = Concept.objects.get(name=concept_name)
-                    # for related_concept_name in related_concepts:
-                    #     if not Concept.objects.filter(name=related_concept_name).exists():
-                    #         new_related_concept = Concept(name=related_concept_name)
-                    #         new_related_concept.related_concepts.add(existing_concept)
-                    #         new_related_concept.save()
-                    #         existing_concept.related_concepts.add(new_related_concept)
-                    #     else:
-                    #         existing_related_concept = Concept.objects.get(name=related_concept_name)
-                    #         existing_related_concept.related_concepts.add(existing_concept)
-                    #         existing_related_concept.save()
-                    #         existing_concept.related_concepts.add(existing_related_concept)
-                    existing_concept.save()
-                    new_super_concept.concepts.add(existing_concept)        
+            for super_concept in data['super_concepts']:
+                for concept in super_concept['concepts']:
+                    #마찬가지로 이미 있는 concept인지 확인 후 없으면 새롭게 생성.
+                    concept_name = concept['name']
+                    #related_concepts 는 이미 있는 concept일수도 있고 새롭게 만들어지는 concept일 수도 있음.
+                    related_concepts = concept['related_concepts']
+                    print("related_concepts of ", concept_name, " : ", related_concepts)
+                    if not Concept.objects.filter(name=concept_name).exists():
+                        new_concept = Concept.objects.create(name=concept_name, description=concept['description'], priority=concept.get('priority', 0), comp_score=concept.get('comp_score', 0))
+                        for related_concept_name in related_concepts:
+                            if not Concept.objects.filter(name=related_concept_name).exists():
+                                new_related_concept = Concept(name=related_concept_name)
+                                new_related_concept.save()
+                                new_concept.related_concepts.add(new_related_concept)
+                            else:
+                                existing_concept = Concept.objects.get(name=related_concept_name)
+                                new_concept.related_concepts.add(existing_concept)
+                        new_concept.save()
+                        new_super_concept.concepts.add(new_concept)
+                    else:
+                        existing_concept = Concept.objects.get(name=concept_name)
+                        for related_concept_name in related_concepts:
+                            if not Concept.objects.filter(name=related_concept_name).exists():
+                                new_related_concept = Concept(name=related_concept_name)
+                                new_related_concept.save()
+                                new_related_concept.related_concepts.add(existing_concept)
+                                existing_concept.related_concepts.add(new_related_concept)
+                            else:
+                                existing_related_concept = Concept.objects.get(name=related_concept_name)
+                                existing_related_concept.related_concepts.add(existing_concept)
+                                existing_related_concept.save()
+                                existing_concept.related_concepts.add(existing_related_concept)
+                        existing_concept.save()
+                        new_super_concept.concepts.add(existing_concept)        
             return Response({}, status=status.HTTP_201_CREATED)
         except Article.DoesNotExist:
             return Response({'error': 'Article does not exist'}, status=status.HTTP_400_BAD_REQUEST)
