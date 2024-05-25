@@ -384,7 +384,7 @@ class KnowledgeGraphChatDetailView(APIView):
         # calculate the similarity between the vector_representation and the vector_representation of each concept
         similarity_scores = []
         for concept in concepts:
-            similarity_score = self.check_vector_similarity(vector_representation, np.array(list(concept.vector_representation)))
+            similarity_score = self.check_vector_similarity(vector_representation, np.array([float(x) for x in vector_representation.split(",")]))
             similarity_scores.append(similarity_score)
         # sort the concepts based on the similarity scores
         sorted_concepts = [concept for _, concept in sorted(zip(similarity_scores, concepts), reverse=True)]

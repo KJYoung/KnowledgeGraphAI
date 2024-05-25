@@ -13,7 +13,11 @@ const parseMessage = (message: string) => {
 	const boldReplaced = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 	// Replace newline characters with <br />
 	const newlineReplaced = boldReplaced.split('\n').join('<br />');
-	return newlineReplaced;
+
+	// Replace [text](url) with clickable links in blue color
+	const urlPattern = /\[(.*?)\]\((https?:\/\/[^\s]+)\)/g;
+  const processedMessage = newlineReplaced.replace(urlPattern, '<a href="$2" style="color: blue;" target="_blank">$1</a>');
+	return processedMessage;
 };
 
 export const Chat: React.FC<ChatProps> = ({ messages, rev }) => {

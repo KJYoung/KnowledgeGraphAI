@@ -102,3 +102,12 @@ export type createNewGraphChatMsgReqType = {
   chatRoomId: number,
   message: string,
 };
+
+
+export type postFuncCallReqType = {
+  url: string,
+};
+export const postfuncCall = async (payload: postFuncCallReqType) => {
+  const response = await client.post<postFuncCallReqType>(`/api/search/`, payload);
+  return response.data;
+};

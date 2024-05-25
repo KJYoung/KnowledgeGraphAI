@@ -20,6 +20,7 @@ const AddNewKnowledge: React.FC = () => {
   const articleChats = useAppSelector((state) => state.chat.chatSummary);
   const articleChatStat = useAppSelector((state) => state.chat.chatStatus);
   const graphExtStat = useAppSelector((state) => state.chat.constructGraph.status);
+  const postfuncCallStat = useAppSelector((state) => state.chat.postfuncCall.status);
 
   const [input, setInput] = useState<string>('');
   const [chat, setChat] = useState<string>('');
@@ -45,6 +46,9 @@ const AddNewKnowledge: React.FC = () => {
   const handleAddtoGraph = () => {
     dispatch(chatActions.constructGraph({ url: input }));
   }
+  const handleFuncCall = () => {
+    dispatch(chatActions.postfuncCall({ url: input}));
+  }
   return (
     <Container component="main" maxWidth="xl">
       <CssBaseline />
@@ -63,6 +67,9 @@ const AddNewKnowledge: React.FC = () => {
               </Button>}
               {articleChats !== null && (graphExtStat === null ? <CircularProgress /> : <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
                 Add to Graph!
+              </Button>)}
+              {articleChats !== null && (postfuncCallStat === null ? <CircularProgress /> : <Button variant="contained" color="primary" onClick={handleFuncCall} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
+                Find Ref!
               </Button>)}
             </FlexR>
           </FlexC>

@@ -40,7 +40,10 @@ interface ChatState {
   },
   createNewGraphChatMsg: {
     status: Status,
-  }
+  },
+  postfuncCall: {
+    status: Status,
+  },
 }
 
 export const initialState: ChatState = {
@@ -75,7 +78,10 @@ export const initialState: ChatState = {
   },
   createNewGraphChatMsg: {
     status: undefined,
-  }
+  },
+  postfuncCall: {
+    status: undefined,
+  },
 };
 
 export const chatSlice = createSlice({
@@ -179,6 +185,16 @@ export const chatSlice = createSlice({
     },
     createNewGraphChatRoomsSuccess: (state, { payload }) => {
         state.createGraphChatRoom.status = true;
+    },
+    postfuncCall: (state, action: PayloadAction<chatAPI.postFuncCallReqType>) => {
+        state.postfuncCall.status = null;
+    },
+    postfuncCallFailure: (state, { payload }) => {
+      state.postfuncCall.status = false;
+    },
+    postfuncCallSuccess: (state, { payload }) => {
+      state.chatSummary = payload.summary;
+      state.postfuncCall.status = true;
     },
     getGraphChatDetails: (state, action: PayloadAction<chatAPI.getGraphChatDetailsReqType>) => {
       state.getGraphChatDetails.status = null;
@@ -293,6 +309,14 @@ function* createNewGraphChatMsgSaga(action: PayloadAction<chatAPI.createNewGraph
     yield put(chatActions.createNewGraphChatMsgFailure(error));
   }
 }
+function* postfuncCallSaga(action: PayloadAction<chatAPI.postFuncCallReqType>) {
+  try {
+    const response: AxiosResponse = yield call(chatAPI.postfuncCall, action.payload);
+    yield put(chatActions.postfuncCallSuccess(response));
+  } catch (error) {
+    yield put(chatActions.postfuncCallFailure(error));
+  }
+}
 
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
@@ -306,4 +330,5 @@ export default function* chatSaga() {
   yield takeLatest(chatActions.createNewGraphChatRooms, createNewGraphChatRoomsSaga);
   yield takeLatest(chatActions.createNewGraphChatMsg, createNewGraphChatMsgSaga);
   yield takeLatest(chatActions.getGraphChatDetails, getGraphChatDetailsSaga);
+  yield takeLatest(chatActions.postfuncCall, postfuncCallSaga);
 }
