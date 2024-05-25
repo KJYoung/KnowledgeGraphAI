@@ -50,3 +50,15 @@ export interface Node {
   priority: number;
   comp_score: number;
 }
+
+export type editGraphNodePutReqType = {
+  id: number,
+  description: string,
+  priority: number,
+  comp_score: number,
+};
+
+export const editGraphNode = async (payload: editGraphNodePutReqType) => {
+  const response = await client.put<editGraphNodePutReqType>(`/api/concept/`, payload);
+  return response.data;
+};

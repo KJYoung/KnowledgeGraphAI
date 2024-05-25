@@ -31,6 +31,7 @@ const GraphVisualization: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const editNodeStatus = useAppSelector((state) => state.chat.editGraphNode.status);
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedNode(null);
@@ -49,6 +50,11 @@ const GraphVisualization: React.FC = () => {
     dispatch(chatActions.getGraph());
     dispatch(chatActions.getSuperConcept());
   }, [dispatch]);
+  useEffect(() => {
+    if(editNodeStatus){
+      dispatch(chatActions.getGraph());
+    }
+  }, [editNodeStatus, dispatch]);
 
   const handleListItemClick = (item: string) => {
     setSuperConcept(item);
@@ -69,10 +75,7 @@ const GraphVisualization: React.FC = () => {
   const handleSave = () => {
     // Save the updated node information (you can also send this to the backend if needed)
     if (selectedNode) {
-        //   setData(prevData => ({
-        //     ...prevData,
-        //     nodes: prevData.nodes.map(node => node.id === selectedNode.id ? selectedNode : node)
-        //   }));
+      dispatch(chatActions.editGraphNode({ id: selectedNode.id, description: selectedNode.description, priority: selectedNode.priority, comp_score: selectedNode.comp_score }));
     }
     handleModalClose();
   };

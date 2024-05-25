@@ -5,15 +5,15 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import * as chatAPI from '../apis/chat';
 
-type Status = boolean | null | undefined; 
+type Status = boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
 
 interface ChatState {
   chatList: string[];
   chatSummary: string | null;
-  chatStatus: Status; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
+  chatStatus: Status; 
   error: AxiosError | null;
   constructGraph: {
-    status: Status; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
+    status: Status;
   },
   getGraph: {
     graph: any,
@@ -23,6 +23,9 @@ interface ChatState {
     superConcepts: any,
     status: Status,
   },
+  editGraphNode: {
+    status: Status,
+  }
 }
 
 export const initialState: ChatState = {
@@ -39,6 +42,9 @@ export const initialState: ChatState = {
   },
   superConcepts: {
     superConcepts: null,
+    status: undefined,
+  },
+  editGraphNode: {
     status: undefined,
   }
 };
@@ -115,6 +121,15 @@ export const chatSlice = createSlice({
         state.superConcepts.superConcepts = null;
         state.superConcepts.status = false;
     },
+    editGraphNode: (state, action: PayloadAction<chatAPI.editGraphNodePutReqType>) => {
+        state.editGraphNode.status = null;
+    },
+    editGraphNodeSuccess: (state, { payload }) => {
+        state.editGraphNode.status = true;
+    },
+    editGraphNodeFailure: (state, { payload }) => {
+        state.editGraphNode.status = false;
+    },
   },
 });
 export const chatActions = chatSlice.actions;
@@ -167,6 +182,14 @@ function* constructGraphSaga(action: PayloadAction<chatAPI.constructGraphPostReq
       yield put(chatActions.constructGraphFailure(error));
     }
 }
+function* editGraphNodeSaga(action: PayloadAction<chatAPI.editGraphNodePutReqType>) {
+    try {
+      const response: AxiosResponse = yield call(chatAPI.editGraphNode, action.payload);
+      yield put(chatActions.editGraphNodeSuccess(response));
+    } catch (error) {
+      yield put(chatActions.editGraphNodeFailure(error));
+    }
+}
 
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
@@ -175,4 +198,5 @@ export default function* chatSaga() {
   yield takeLatest(chatActions.sendNewMessage, sendNewMessageSaga);
   yield takeLatest(chatActions.createNewURL, createNewURLSaga);
   yield takeLatest(chatActions.constructGraph, constructGraphSaga);
+  yield takeLatest(chatActions.editGraphNode, editGraphNodeSaga);
 }
