@@ -28,8 +28,13 @@ export type constructGraphPostReqType = {
     url: string,
 };
 
-export const getGraph = async () => {
-  const response = await client.get(`/api/graph/`);
+export type getGraphReqType = {
+  superConcept?: string,
+};
+
+export const getGraph = async (payload: getGraphReqType) => {
+  const queryString = payload.superConcept ? `?superConcept=${encodeURIComponent(payload.superConcept)}` : '';
+  const response = await client.get(`/api/graph/${queryString}`);
   return response.data;
 };
 
@@ -41,4 +46,38 @@ export const constructGraph = async (payload: constructGraphPostReqType) => {
 export const getSuperConcept = async () => {
   const response = await client.get(`/api/superconcept/`);
   return response.data;
+};
+
+export interface Node {
+  id: number;
+  name: string;
+  description: string;
+  priority: number;
+  comp_score: number;
+}
+
+export type editGraphNodePutReqType = {
+  id: number,
+  description: string,
+  priority: number,
+  comp_score: number,
+};
+
+export const editGraphNode = async (payload: editGraphNodePutReqType) => {
+  const response = await client.put<editGraphNodePutReqType>(`/api/concept/`, payload);
+  return response.data;
+};
+
+export type getGraphChatRoomsReqType = {
+  superConcept?: number,
+};
+export type createNewGraphChatRoomsReqType = {
+  superConcept: number,
+};
+export type getGraphChatDetailesReqType = {
+  chatRoomId: number,
+};
+export type createNewGraphChatMsgReqType = {
+  chatRoomId: number,
+  message: string,
 };

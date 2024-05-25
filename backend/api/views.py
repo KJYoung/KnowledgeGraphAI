@@ -27,3 +27,19 @@ class SuperConceptView(APIView):
             return Response({ 'super_concepts': super_concept_names}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Concept List
+class ConceptView(APIView):
+    def put(self, request, *args, **kwargs):
+        update_obj = request.data
+        try:
+            target_concept = Concept.objects.get(pk=update_obj.get('id'))
+            target_concept.description = update_obj.get('description')
+            target_concept.priority = update_obj.get('priority')
+            target_concept.comp_score = update_obj.get('comp_score')
+            target_concept.save()
+            return Response({ 'status': 'success' }, status=status.HTTP_200_OK)
+        except Concept.DoesNotExist:
+            return Response({'error': 'Concept does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
