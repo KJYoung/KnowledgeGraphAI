@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Graph } from 'react-d3-graph';
 import styled, { keyframes } from 'styled-components';
-import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress, Modal, FormControlLabel, Checkbox, Box } from '@mui/material';
+import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress, Modal, FormControlLabel, Checkbox, Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { chatActions } from '../store/slices/chat';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -24,12 +24,24 @@ import { Node } from '../store/apis/chat';
 
 //   setGraphData(formattedGraphData);
 
-const determineNodeColor = (comp_score: number): string => {
+const determineNodeColor = (node: any, mode: number): string => {
   // Adjust the logic based on your comp_score thresholds and colors
-  if (comp_score > 80) return 'green';
-  if (comp_score > 50) return 'yellow';
-  if (comp_score > 20) return 'orange';
-  return 'red';
+  if (mode == 1){
+    if (node.comp_score > 80) return 'green';
+    if (node.comp_score > 50) return 'yellow';
+    if (node.comp_score > 20) return 'orange';
+    return 'red';
+  }
+  else if(mode == 2){
+    if (node.priority > 8) return 'green';
+    if (node.priority > 5) return 'yellow';
+    if (node.priority > 2) return 'orange';
+    return 'red';
+  }
+  else{
+    return "#d3d3d3"
+  }
+  
 };
 
 const GraphVisualization: React.FC = () => {
@@ -41,6 +53,11 @@ const GraphVisualization: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const editNodeStatus = useAppSelector((state) => state.chat.editGraphNode.status);
   const [loading, setLoading] = useState(true);
+
+  const [selectedButton, setSelectedButton] = useState<string>("1"); // color mode buttons
+  const handleButtonClick = (event: React.MouseEvent<HTMLElement>, newValue: string) => {
+    setSelectedButton(newValue);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -66,7 +83,7 @@ const GraphVisualization: React.FC = () => {
   const graphData = rawGraphData ? {
     nodes: rawGraphData.nodes.map((node: any) => ({
       ...node,
-      color: determineNodeColor(node.comp_score),
+      color: determineNodeColor(node, parseInt(selectedButton)),
     })),
     links: rawGraphData.links,
   } : null;
@@ -134,7 +151,24 @@ const GraphVisualization: React.FC = () => {
                 />
             }
             label="Edit Mode"
-          /> 
+          />
+          <ToggleButtonGroup
+            value={selectedButton}
+            exclusive
+            onChange={(event, newValue) => setSelectedButton(newValue)}
+            aria-label="toggle button group"
+            style={{ marginBottom: '1rem' }}
+          >
+            <ToggleButton value="1" aria-label="Comp_Score Color" onClick={handleButtonClick}>
+              Comp_Score Color
+            </ToggleButton>
+            <ToggleButton value="2" aria-label="Priority Color" onClick={handleButtonClick}>
+              Priority Color
+            </ToggleButton>
+            <ToggleButton value="3" aria-label="Default Color" onClick={handleButtonClick}>
+              Default Color
+            </ToggleButton>
+          </ToggleButtonGroup>
           <GraphContainer>
             {!loading ? (graphData && graphData.nodes.length > 0 && (
                 <>
