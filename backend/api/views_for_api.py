@@ -13,7 +13,7 @@ from .serializers import ArticleSerializer
 from prompts import (
     CHAT_SEP, TABLE_SEP, 
     PROMPT_FOR_URL, PROMPT_FOR_GRAPH,
-    GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB, CHAT_ROOM, CHAT_MIDDLE, CHAT_END
+    GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB, CHAT_ROOM, CHAT_MIDDLE, CHAT_END, CHAT_OUTPUT_TYPE
 )
 import re, json
 from openai import OpenAI
@@ -350,9 +350,11 @@ class KnowledgeGraphChatDetailView(APIView):
             stream=True,
         )
         res = ""
+        chat_name = ""
         for chunk in stream:
-            res += chunk.choices[0].delta.content or ""
-        return res
+            res += chunk.choices[0].delta.content['response'] or ""
+            chat_name += chunk.choices[0].delta.content['chat_name'] or ""
+        return res, chat_name
 
     def check_vector_similarity(self, vector1, vector2):
         return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
@@ -369,15 +371,16 @@ class KnowledgeGraphChatDetailView(APIView):
     
     
     def get(self, request, *args, **kwargs):
+        #find with chat_room id
+        id = request.data.get('id')
         try:
-            articles = Article.objects.all()
-            # article_names = [{'name': article.name} for article in articles]
-            article_names = [article.name for article in articles]
-            return Response({ 'chats': article_names}, status=status.HTTP_200_OK)
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            chat_room = UserChattingRoom.objects.get(id=id)
+            chat_history = chat_room.chat_history
+            chat_name = chat_room.name
+            return Response({'chat_history': chat_history, 'chat_name': chat_name}, status=status.HTTP_200_OK)
+        except UserChattingRoom.DoesNotExist:
+            return Response({'error': 'Chat history does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        
     
     ## user가 대화를 거는 경우
     def post(self, request, *args, **kwargs):
@@ -424,12 +427,15 @@ class KnowledgeGraphChatDetailView(APIView):
             
         history_processed = get_history(history)
         
-        prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE + history_processed + CHAT_END
+        prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE + history_processed + CHAT_OUTPUT_TYPE + CHAT_END
             
-        llm_result = self.chat_function(message, prompt)
-        
+        (llm_result, chat_name) = self.chat_function(message, prompt)
+        print("llm_result: ", llm_result)
+        print("chat_name: ", chat_name)
+
         # Update the chat history
         chat_room.chat_history += f"{message}\n{llm_result}\n"
+        chat_room.name = chat_name
         chat_room.save()
         
-        return Response({'response': llm_result}, status=status.HTTP_201_CREATED)
+        return Response({'response': llm_result, 'chat_name': chat_name}, status=status.HTTP_201_CREATED)
