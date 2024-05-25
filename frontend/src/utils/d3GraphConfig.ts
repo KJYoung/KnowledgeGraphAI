@@ -1,7 +1,7 @@
 export const graphConfig = {
     automaticRearrangeAfterDropNode: true,
     collapsible: true,
-    directed: false,
+    directed: true,
     focusAnimationDuration: 0.75,
     focusZoom: 1,
     freezeAllDragEvents: false,
