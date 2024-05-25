@@ -5,7 +5,7 @@ export const graphConfig = {
     focusAnimationDuration: 0.75,
     focusZoom: 1,
     freezeAllDragEvents: false,
-    height: 400,
+    height: 800,
     highlightDegree: 2,
     highlightOpacity: 0.2,
     linkHighlightBehavior: true,
@@ -16,7 +16,7 @@ export const graphConfig = {
     panAndZoom: false,
     staticGraph: false,
     staticGraphWithDragAndDrop: false,
-    width: 800,
+    width: 1000,
     d3: {
       alphaTarget: 0.05,
       gravity: -250,

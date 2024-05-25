@@ -1,76 +1,64 @@
 {
   "super_concepts": [
     {
-      "name": "Neural Network Architectures",
+      "name": "K-Pop",
       "concepts": [
         {
-          "name": "Transformer",
-          "description": "A type of neural network architecture that has become increasingly popular in natural language processing tasks. It is composed of three main components: the input embedding, the self-attention mechanism, and the output linear layer. The self-attention mechanism is the core component of transformers, allowing the model to attend to different parts of the input sequence simultaneously. By understanding these components and their relationships, developers and researchers can better design and improve transformer-based models.",
+          "name": "NewJeans",
+          "description": "A South Korean girl group formed by ADOR, a subsidiary of Hybe Labels, known for their unique blend of genres and unconventional debut process.",
           "related_concepts": [
-            "Self-Attention Mechanism",
-            "Input Embedding",
-            "Output Linear Layer",
-            "Natural Language Processing"
+            "ADOR",
+            "Hybe Labels",
+            "K-Pop Industry",
+            "R&B-infused Sound",
+            "Interactive Music Videos"
           ]
         },
         {
-          "name": "Self-Attention Mechanism",
-          "description": "The core component of transformers that allows the model to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies. It is composed of query, key, and value tensors, which compute the weighted sum of the input sequence based on the attention weights.",
+          "name": "ADOR",
+          "description": "A subsidiary of Hybe Labels that formed NewJeans, marking a new direction in K-pop group formation and debut processes.",
           "related_concepts": [
-            "Transformer",
-            "Query-Key-Value Tensors",
-            "Attention Weights",
-            "Parallelization"
+            "Hybe Labels",
+            "NewJeans",
+            "K-Pop Industry"
           ]
         },
         {
-          "name": "Input Embedding",
-          "description": "The component responsible for converting the input sequence into a numerical representation that can be processed by the self-attention mechanism. It is a crucial step in the transformer architecture, as it enables the model to understand the input sequence and perform subsequent computations.",
+          "name": "Hybe Labels",
+          "description": "The parent company of ADOR, a major player in the K-pop industry, known for groups like BTS and Seventeen.",
           "related_concepts": [
-            "Transformer",
-            "Self-Attention Mechanism",
-            "Numerical Representation"
+            "ADOR",
+            "NewJeans",
+            "K-Pop Industry",
+            "BTS",
+            "Seventeen"
           ]
         },
         {
-          "name": "Output Linear Layer",
-          "description": "The component responsible for transforming the output of the self-attention mechanism into the final output of the model. It is a linear layer that takes the output of the self-attention mechanism and produces the final output of the transformer.",
+          "name": "Unconventional Debut",
+          "description": "NewJeans' debut process, which involved releasing music and music videos without prior announcement or promotion, sets them apart from other K-pop groups.",
           "related_concepts": [
-            "Transformer",
-            "Self-Attention Mechanism",
-            "Linear Layer"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Techniques",
-      "concepts": [
-        {
-          "name": "Query-Key-Value Tensors",
-          "description": "The three tensors used in the self-attention mechanism to compute the attention weights and weighted sum of the input sequence. They are used to compute the similarity between different parts of the input sequence and attend to the most relevant parts.",
-          "related_concepts": [
-            "Self-Attention Mechanism",
-            "Attention Weights",
-            "Weighted Sum"
+            "NewJeans",
+            "ADOR",
+            "Hybe Labels"
           ]
         },
         {
-          "name": "Multi-Head Attention",
-          "description": "A technique used in transformers to concatenate and linearly transform multiple attention outputs, allowing the model to capture different aspects of the input sequence. It is a mechanism that enables the model to attend to different parts of the input sequence simultaneously and capture different relationships between them.",
+          "name": "R&B-infused Sound",
+          "description": "NewJeans' unique blend of genres, including R&B, pop, and hip-hop, contributes to their distinctive sound.",
           "related_concepts": [
-            "Transformer",
-            "Self-Attention Mechanism",
-            "Attention Outputs"
+            "NewJeans",
+            "K-Pop Industry",
+            "Hybe Labels"
           ]
         },
         {
-          "name": "Positional Encoding",
-          "description": "A technique used to preserve the order of the input sequence in transformers, as the self-attention mechanism is permutation-invariant. It is a mechanism that enables the model to understand the order of the input sequence and capture positional relationships between different parts of the sequence.",
+          "name": "Interactive Music Videos",
+          "description": "The 'choose-your-own-adventure' style music video for 'Hype Boy' showcases the group's innovative approach to music video production.",
           "related_concepts": [
-            "Transformer",
-            "Self-Attention Mechanism",
-            "Permutation-Invariance"
+            "NewJeans",
+            "ADOR",
+            "Hybe Labels"
           ]
         }
       ]

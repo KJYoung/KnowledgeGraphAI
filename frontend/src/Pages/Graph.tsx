@@ -176,12 +176,12 @@ const GraphVisualization: React.FC = () => {
               {!loading ? (graphData && graphData.nodes.length > 0 && (
                   <>
                     <Graph
-                    id="knowledge-graph"
-                    data={graphData}
-                    config={{ ...graphConfig, initialZoom: zoomLevel }}
-                    onClickNode={onClickNode}
-                    onClickLink={onClickLink}
-                    onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
+                      id="knowledge-graph"
+                      data={graphData}
+                      config={{ ...graphConfig, initialZoom: zoomLevel }}
+                      onClickNode={onClickNode}
+                      onClickLink={onClickLink}
+                      onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
                     />
                     <ZoomControls>
                     <Button variant="contained" color="primary" onClick={handleZoomIn}>
@@ -315,6 +315,7 @@ const GraphContainer = styled.div`
   margin-top: 2rem;
   position: relative;
   animation: ${fadeIn} 1s ease-in;
+  height: 70vh;
 `;
 
 const ZoomControls = styled.div`
