@@ -13,8 +13,8 @@ class Concept(AbstractTag):
     description = models.TextField()
     comp_score = models.IntegerField()
 
-    prior_concepts = models.ManyToManyField('self', symmetrical=False, related_name='prerequisites')
-    related_concepts = models.ManyToManyField('self', symmetrical=False, related_name='related_to')
+    prior_concepts = models.ManyToManyField('self', symmetrical=False, related_name='prerequisites', blank=True)
+    related_concepts = models.ManyToManyField('self', symmetrical=False, related_name='related_to', blank=True)
 
 class SuperConcept(AbstractTag):
     concepts = models.ManyToManyField(Concept, related_name='super_concepts')
