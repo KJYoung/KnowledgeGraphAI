@@ -42,3 +42,11 @@ export const getSuperConcept = async () => {
   const response = await client.get(`/api/superconcept/`);
   return response.data;
 };
+
+export interface Node {
+  id: number;
+  name: string;
+  description: string;
+  priority: number;
+  comp_score: number;
+}

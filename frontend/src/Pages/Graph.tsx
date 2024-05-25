@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Graph } from 'react-d3-graph';
 import styled, { keyframes } from 'styled-components';
-import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress } from '@mui/material';
+import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress, Modal, FormControlLabel, Checkbox } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { chatActions } from '../store/slices/chat';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { graphConfig } from '../utils/d3GraphConfig';
 import { ListView } from '../Components/ChatList';
+import { Node } from '../store/apis/chat';
 
 // Parse the graph data
 //   const graph = JSON.parse(data.graph);
@@ -27,6 +28,18 @@ const GraphVisualization: React.FC = () => {
   const dispatch = useDispatch();
   
   const [superConcept, setSuperConcept] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setSelectedNode(null);
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (selectedNode) {
+      setSelectedNode({ ...selectedNode, [e.target.name]: e.target.value });
+    }
+  };
   const superConcepts = useAppSelector((state) => state.chat.superConcepts.superConcepts);
   const graphData = useAppSelector((state) => state.chat.getGraph.graph);
 
@@ -43,7 +56,25 @@ const GraphVisualization: React.FC = () => {
   };
 
   const onClickNode = (nodeId: string) => {
-    console.log(`Clicked node ${nodeId}`);
+    if(editMode){
+      const clickedNode = graphData.nodes.find((n : any) => parseInt(n.id) === parseInt(nodeId));
+      if (clickedNode) {
+          setSelectedNode(clickedNode);
+          setModalOpen(true);
+      }
+    }else{
+        console.log(`Clicked node ${nodeId}`);
+    }
+  };
+  const handleSave = () => {
+    // Save the updated node information (you can also send this to the backend if needed)
+    if (selectedNode) {
+        //   setData(prevData => ({
+        //     ...prevData,
+        //     nodes: prevData.nodes.map(node => node.id === selectedNode.id ? selectedNode : node)
+        //   }));
+    }
+    handleModalClose();
   };
 
   const onClickLink = (source: string, target: string) => {
@@ -62,7 +93,18 @@ const GraphVisualization: React.FC = () => {
     <Container component="main" maxWidth="xl">
       <CssBaseline />
       <MainContent>
-        <Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1 }}>  
+        <Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1 }}>
+          <FormControlLabel
+            control={
+                <Checkbox
+                checked={editMode}
+                onChange={(e) => setEditMode(e.target.checked)}
+                name="editMode"
+                color="primary"
+                />
+            }
+            label="Edit Mode"
+          /> 
           <GraphContainer>
             {graphData && graphData.nodes.length > 0 && (
                 <>
@@ -89,6 +131,45 @@ const GraphVisualization: React.FC = () => {
                 </>
             )}
           </GraphContainer>
+          <Modal
+            open={modalOpen}
+            onClose={handleModalClose}
+          >
+            <ModalContent>
+              <Typography variant="h6" gutterBottom>
+                Edit Node
+              </Typography>
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Description"
+                name="description"
+                value={selectedNode?.description || ''}
+                onChange={handleInputChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Priority"
+                name="priority"
+                type="number"
+                value={selectedNode?.priority || ''}
+                onChange={handleInputChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Comp Score"
+                name="comp_score"
+                type="number"
+                value={selectedNode?.comp_score || ''}
+                onChange={handleInputChange}
+              />
+              <Button variant="contained" color="primary" onClick={handleSave} style={{ marginTop: '1rem' }}>
+                Save
+              </Button>
+            </ModalContent>
+        </Modal>
         </Paper>
         <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
         {/* <ListViewContainer> */}
@@ -102,6 +183,18 @@ const GraphVisualization: React.FC = () => {
 };
 
 export default GraphVisualization;
+
+const ModalContent = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  outline: none;
+`;
 
 const FullDiv = styled.div`
   width: 100%;
