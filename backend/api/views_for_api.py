@@ -451,12 +451,14 @@ class KnowledgeGraphChatDetailView(APIView):
         concepts_str = ""
         for concept in selected_concepts_info:
             concepts_str += f"{concept['name']} {TABLE_SEP} {concept['description']}\n"
-            
+        
+        summary_segments = history.split(CHAT_SEP)
+        history = pairwise([*summary_segments])
         history_processed = get_history(history)
         
         prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE 
         for h in history_processed:
-            prompt += h
+            prompt += h['content']
         prompt += CHAT_OUTPUT_TYPE + CHAT_END
             
         (llm_result, chat_name) = self.chat_function(message, prompt)
