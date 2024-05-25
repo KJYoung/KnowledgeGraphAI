@@ -69,7 +69,8 @@ const GraphVisualization: React.FC = () => {
                 <Graph
                 id="knowledge-graph"
                 data={graphData}
-                config={{ ...graphConfig, initialZoom: zoomLevel }}
+                config={graphConfig}
+                // config={{ ...graphConfig, initialZoom: zoomLevel }}
                 onClickNode={onClickNode}
                 onClickLink={onClickLink}
                 onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
