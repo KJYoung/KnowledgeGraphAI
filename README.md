@@ -37,3 +37,14 @@
         cd backend
         django-admin startapp api
     ```
+
+## Examples
+### Knowledge Graph
+![Ex2](./assets/스크린샷%202024-05-25%2017.08.39.png)
+
+### Chats w.r.t. Article (Func Call)
+![Ex3](./assets/스크린샷%202024-05-25%2017.08.51.png)
+
+### Chats w.r.t. Graph (RAG)
+- 원하는 SuperConcept를 우측에서 선택하고, (+) 버튼으로 채팅방을 생성후, 하단 메세지를 전송하여 채팅을 진행할 수 있다.
+![Ex1](./assets/스크린샷%202024-05-25%2017.08.29.png)

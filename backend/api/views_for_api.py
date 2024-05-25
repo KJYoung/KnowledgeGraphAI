@@ -258,7 +258,6 @@ class KnowledgeGraphView(APIView):
                             model="text-embedding-3-small"
                         )
                         vector_representation = response.data[0].embedding
-                        print("vector_representation: ", vector_representation)
                         new_concept = Concept.objects.create(name=concept_name, description=description, priority=priority, comp_score=comp_score, vector_representation=vector_representation)
                         new_super_concept.concepts.add(new_concept)
                     else:
@@ -384,7 +383,7 @@ class KnowledgeGraphChatDetailView(APIView):
         # calculate the similarity between the vector_representation and the vector_representation of each concept
         similarity_scores = []
         for concept in concepts:
-            similarity_score = self.check_vector_similarity(vector_representation, np.array([float(x) for x in vector_representation.split(",")]))
+            similarity_score = self.check_vector_similarity(vector_representation, [float(x) for x in concept.vector_representation[1:-1].split(",")])  
             similarity_scores.append(similarity_score)
         # sort the concepts based on the similarity scores
         sorted_concepts = [concept for _, concept in sorted(zip(similarity_scores, concepts), reverse=True)]

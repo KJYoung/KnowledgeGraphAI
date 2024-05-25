@@ -1,64 +1,120 @@
 {
   "super_concepts": [
     {
-      "name": "K-Pop",
+      "name": "War",
       "concepts": [
         {
-          "name": "NewJeans",
-          "description": "A South Korean girl group formed by ADOR, a subsidiary of Hybe Labels, known for their unique blend of genres and unconventional debut process.",
+          "name": "First Sino-Japanese War",
+          "description": "A military conflict between China (Qing dynasty) and Japan (Empire of Japan) that lasted from 1894 to 1895.",
           "related_concepts": [
-            "ADOR",
-            "Hybe Labels",
-            "K-Pop Industry",
-            "R&B-infused Sound",
-            "Interactive Music Videos"
+            "Korea",
+            "Treaty of Shimonoseki",
+            "Meiji Restoration",
+            "Liaodong Peninsula",
+            "Admiral It\u014d Sukeyuki",
+            "Japan",
+            "China",
+            "Qing dynasty",
+            "Empire of Japan"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Japan",
+      "concepts": [
+        {
+          "name": "Meiji Restoration",
+          "description": "The Japanese modernization movement that led to the country's military reforms and ultimately contributed to its victory in the First Sino-Japanese War.",
+          "related_concepts": [
+            "First Sino-Japanese War",
+            "Empire of Japan",
+            "Admiral It\u014d Sukeyuki"
           ]
         },
         {
-          "name": "ADOR",
-          "description": "A subsidiary of Hybe Labels that formed NewJeans, marking a new direction in K-pop group formation and debut processes.",
+          "name": "Empire of Japan",
+          "description": "A historical nation-state that existed from the late 19th century to the mid-20th century.",
           "related_concepts": [
-            "Hybe Labels",
-            "NewJeans",
-            "K-Pop Industry"
+            "Meiji Restoration",
+            "First Sino-Japanese War",
+            "Admiral It\u014d Sukeyuki"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "China",
+      "concepts": [
+        {
+          "name": "Qing dynasty",
+          "description": "The last imperial dynasty in China, which ruled from 1644 to 1912.",
+          "related_concepts": [
+            "First Sino-Japanese War",
+            "Korea",
+            "Liaodong Peninsula"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Geography",
+      "concepts": [
+        {
+          "name": "Korea",
+          "description": "A country located on the Korean Peninsula in East Asia.",
+          "related_concepts": [
+            "First Sino-Japanese War",
+            "Qing dynasty",
+            "Liaodong Peninsula"
           ]
         },
         {
-          "name": "Hybe Labels",
-          "description": "The parent company of ADOR, a major player in the K-pop industry, known for groups like BTS and Seventeen.",
+          "name": "Liaodong Peninsula",
+          "description": "A strategic region in northeastern China that was ceded to Japan as a result of the Treaty of Shimonoseki.",
           "related_concepts": [
-            "ADOR",
-            "NewJeans",
-            "K-Pop Industry",
-            "BTS",
-            "Seventeen"
+            "First Sino-Japanese War",
+            "Treaty of Shimonoseki",
+            "Qing dynasty",
+            "Korea"
           ]
         },
         {
-          "name": "Unconventional Debut",
-          "description": "NewJeans' debut process, which involved releasing music and music videos without prior announcement or promotion, sets them apart from other K-pop groups.",
+          "name": "Taiwan",
+          "description": "An island country located in East Asia.",
           "related_concepts": [
-            "NewJeans",
-            "ADOR",
-            "Hybe Labels"
+            "First Sino-Japanese War",
+            "Treaty of Shimonoseki"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "Politics",
+      "concepts": [
         {
-          "name": "R&B-infused Sound",
-          "description": "NewJeans' unique blend of genres, including R&B, pop, and hip-hop, contributes to their distinctive sound.",
+          "name": "Treaty of Shimonoseki",
+          "description": "The treaty that ended the First Sino-Japanese War, granting Japan control of Taiwan, the Pescadores Islands, and the Liaodong Peninsula.",
           "related_concepts": [
-            "NewJeans",
-            "K-Pop Industry",
-            "Hybe Labels"
+            "First Sino-Japanese War",
+            "Meiji Restoration",
+            "Liaodong Peninsula",
+            "Taiwan",
+            "Pescadores Islands"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "People",
+      "concepts": [
         {
-          "name": "Interactive Music Videos",
-          "description": "The 'choose-your-own-adventure' style music video for 'Hype Boy' showcases the group's innovative approach to music video production.",
+          "name": "Admiral It\u014d Sukeyuki",
+          "description": "The Japanese naval commander who played a key role in the First Sino-Japanese War, leading the Japanese navy to several victories against the Chinese fleet.",
           "related_concepts": [
-            "NewJeans",
-            "ADOR",
-            "Hybe Labels"
+            "First Sino-Japanese War",
+            "Meiji Restoration",
+            "Empire of Japan"
           ]
         }
       ]
