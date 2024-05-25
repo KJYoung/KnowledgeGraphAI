@@ -177,7 +177,7 @@ const GraphVisualization: React.FC = () => {
         <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
         {/* <ListViewContainer> */}
           <strong>-- SuperConcepts --</strong>
-          {superConcepts && <ListView items={superConcepts} onItemClick={handleListItemClick} />}
+          {superConcepts && <ListView items={superConcepts} onItemClick={handleListItemClick} currentItem={superConcept}/>}
         {/* </ListViewContainer> */}
         </Paper>
       </MainContent>
