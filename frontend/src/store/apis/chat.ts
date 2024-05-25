@@ -28,6 +28,11 @@ export type constructGraphPostReqType = {
     url: string,
 };
 
+export const getGraph = async () => {
+  const response = await client.get(`/api/graph/`);
+  return response.data;
+};
+
 export const constructGraph = async (payload: constructGraphPostReqType) => {
   const response = await client.post<constructGraphPostReqType>(`/api/graph/`, payload);
   return response.data;

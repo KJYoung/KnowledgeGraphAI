@@ -148,16 +148,37 @@ class KnowledgeGraphView(APIView):
         return res
 
     def get(self, request, *args, **kwargs):
-        data = request.data
-        super_concepts = data['super_concepts']
-        user_concepts = []
-        for super_concept in super_concepts:
-            name = super_concept['name']
-            #find the concept which has the super_conept of name
-            concept = Concept.objects.get(super_concepts__name=name)
-            user_concepts.append(concept)
-        # 클라이언트에게 data 보내기
-        return Response({'super_concepts': super_concepts, 'user_concepts': user_concepts}, status=status.HTTP_200_OK)
+        concepts = Concept.objects.all()
+        nodes, edges = [], []
+        
+        for concept in concepts:
+            nodes.append({
+                "id": concept.id,
+                "name": concept.name,
+                "description": concept.description,
+                "priority": concept.priority,
+                "comp_score": concept.comp_score
+            })
+            
+            for related_concept in concept.related_concepts.all():
+                if concept.id < related_concept.id:  # Avoid duplicating edges in an undirected graph
+                    edges.append({
+                        "source": concept.id,
+                        "target": related_concept.id
+                    })
+        
+        graph_data = { "nodes": nodes, "links": edges }
+
+        # data = request.data
+        # super_concepts = data['super_concepts']
+        # user_concepts = []
+        # for super_concept in super_concepts:
+        #     name = super_concept['name']
+        #     #find the concept which has the super_conept of name
+        #     concept = Concept.objects.get(super_concepts__name=name)
+        #     user_concepts.append(concept)
+        # # 클라이언트에게 data 보내기
+        return Response({'graph': graph_data}, status=status.HTTP_200_OK)
             
     def post(self, request, *args, **kwargs):
         # TODO: Prompt를 구성해서 LLM 호출하여 Update할 정보를 얻고, 처리한 후, DB 업데이트

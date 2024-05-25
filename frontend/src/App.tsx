@@ -4,10 +4,11 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import Header from './Components/Header';
 import './styles/color.css';
 import AddNewKnowledge from './Pages/Add';
+import GraphVisualization from './Pages/Graph';
 
 export const NAV_MAIN_PAGE = '/'; // :Public/Public
 export const NAV_NEW_PAGE = '/new';
-export const NAV_SUM_PAGE = '/summary';
+export const NAV_SUM_PAGE = '/graph';
 
 const App: React.FC = () => {
   const [number, setNumber] = useState<number>(0);
@@ -35,8 +36,7 @@ const App: React.FC = () => {
             </div>
           }/>
           <Route path={NAV_NEW_PAGE} element={<AddNewKnowledge />} />
-          <Route path={'/graph'} element={<span>그래프 테스트입니다.</span>} />
-          <Route path={NAV_SUM_PAGE} element={<div> Summary of Knowledge Page</div>} />
+          <Route path={NAV_SUM_PAGE} element={<GraphVisualization />} />
           <Route path="*" element={
             <div>
               NOT FOUND

@@ -5,15 +5,22 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import * as chatAPI from '../apis/chat';
 
+type Status = boolean | null | undefined; 
+
 interface ChatState {
   chatList: string[];
   chatSummary: string | null;
-  chatStatus: boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
+  chatStatus: Status; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
   error: AxiosError | null;
   constructGraph: {
-    status: boolean | null | undefined; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
-  }
+    status: Status; // True: 성공, False: 실패, null: 로딩중, undefined: 아직 안함.
+  },
+  getGraph: {
+    graph: any,
+    status: Status,
+  },
 }
+
 export const initialState: ChatState = {
   chatList: [],
   chatSummary: null,
@@ -22,6 +29,10 @@ export const initialState: ChatState = {
   constructGraph: {
     status: undefined,
   },
+  getGraph: {
+    graph: null,
+    status: undefined,
+  }
 };
 
 export const chatSlice = createSlice({
@@ -75,6 +86,18 @@ export const chatSlice = createSlice({
     constructGraphFailure: (state, { payload }) => {
         state.constructGraph.status = false;
     },
+    getGraph: state => {
+        state.getGraph.status = null;
+    },
+    getGraphSuccess: (state, { payload }) => {
+        console.log(payload)
+        state.getGraph.graph = payload.graph;
+        state.getGraph.status = true;
+    },
+    getGraphFailure: (state, { payload }) => {
+        state.getGraph.graph = null;
+        state.getGraph.status = false;
+    },
   },
 });
 export const chatActions = chatSlice.actions;
@@ -85,6 +108,14 @@ function* getChatsSaga() {
       yield put(chatActions.getChatsSuccess(response));
     } catch (error) {
       yield put(chatActions.getChatsFailure(error));
+    }
+}
+function* getGraphSaga() {
+    try {
+      const response: AxiosResponse = yield call(chatAPI.getGraph);
+      yield put(chatActions.getGraphSuccess(response));
+    } catch (error) {
+      yield put(chatActions.getGraphFailure(error));
     }
 }
 function* sendNewMessageSaga(action: PayloadAction<chatAPI.sendNewMessagePostReqType>) {
@@ -114,6 +145,7 @@ function* constructGraphSaga(action: PayloadAction<chatAPI.constructGraphPostReq
 
 export default function* chatSaga() {
   yield takeLatest(chatActions.getChats, getChatsSaga);
+  yield takeLatest(chatActions.getGraph, getGraphSaga);
   yield takeLatest(chatActions.sendNewMessage, sendNewMessageSaga);
   yield takeLatest(chatActions.createNewURL, createNewURLSaga);
   yield takeLatest(chatActions.constructGraph, constructGraphSaga);
