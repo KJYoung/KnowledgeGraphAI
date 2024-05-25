@@ -67,3 +67,17 @@ export const editGraphNode = async (payload: editGraphNodePutReqType) => {
   const response = await client.put<editGraphNodePutReqType>(`/api/concept/`, payload);
   return response.data;
 };
+
+export type getGraphChatRoomsReqType = {
+  superConcept?: number,
+};
+export type createNewGraphChatRoomsReqType = {
+  superConcept: number,
+};
+export type getGraphChatDetailesReqType = {
+  chatRoomId: number,
+};
+export type createNewGraphChatMsgReqType = {
+  chatRoomId: number,
+  message: string,
+};

@@ -8,6 +8,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { graphConfig } from '../utils/d3GraphConfig';
 import { ListView } from '../Components/ChatList';
 import { Node } from '../store/apis/chat';
+import ChatRoom from '../Components/GraphChat';
 
 const ALL_FILTER = "ALL";
 
@@ -38,6 +39,7 @@ const GraphVisualization: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [chatMode, setChatMode] = useState<boolean>(false);
   const editNodeStatus = useAppSelector((state) => state.chat.editGraphNode.status);
   const [loading, setLoading] = useState(true);
 
@@ -129,109 +131,114 @@ const GraphVisualization: React.FC = () => {
     <Container component="main" maxWidth="xl">
       <CssBaseline />
       <MainContent>
-        <Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1 }}>
-          <FormControlLabel
-            control={
-                <Checkbox
-                checked={editMode}
-                onChange={(e) => setEditMode(e.target.checked)}
-                name="editMode"
-                color="primary"
-                />
-            }
-            label="Edit Mode"
-          />
-          <ToggleButtonGroup
-            value={selectedButton}
-            exclusive
-            onChange={(event, newValue) => setSelectedButton(newValue)}
-            aria-label="toggle button group"
-            style={{ marginBottom: '1rem' }}
-          >
-            <ToggleButton value="1" aria-label="Comp_Score Color" onClick={handleButtonClick}>
-              Comp_Score Color
-            </ToggleButton>
-            <ToggleButton value="2" aria-label="Priority Color" onClick={handleButtonClick}>
-              Priority Color
-            </ToggleButton>
-            <ToggleButton value="3" aria-label="Default Color" onClick={handleButtonClick}>
-              Default Color
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <GraphContainer>
-            {!loading ? (graphData && graphData.nodes.length > 0 && (
-                <>
-                  <Graph
-                  id="knowledge-graph"
-                  data={graphData}
-                  config={{ ...graphConfig, initialZoom: zoomLevel }}
-                  onClickNode={onClickNode}
-                  onClickLink={onClickLink}
-                  onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
+        <FormControlLabel control={<Checkbox checked={chatMode} onChange={(e) => setChatMode(e.target.checked)} name="editMode" color="primary"/>} label="Chat Mode" />
+        <FlexR>
+          {
+            chatMode ? <ChatRoom />
+            : <><Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1}}>
+            <FormControlLabel
+              control={
+                  <Checkbox
+                    checked={editMode}
+                    onChange={(e) => setEditMode(e.target.checked)}
+                    name="editMode"
+                    color="primary"
                   />
-                  <ZoomControls>
-                  <Button variant="contained" color="primary" onClick={handleZoomIn}>
-                  +
-                  </Button>
-                  <Button variant="contained" color="primary" onClick={handleZoomOut}>
-                  -
-                  </Button>
-                  <span>
-                  Zoom: {zoomLevel.toFixed(2)}
-                  </span>
-                  </ZoomControls>
-                </>
-            )) : <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-            <CircularProgress />
-          </Box>}
-          </GraphContainer>
-          <Modal
-            open={modalOpen}
-            onClose={handleModalClose}
-          >
-            <ModalContent>
-              <Typography variant="h6" gutterBottom>
-                Edit Node
-              </Typography>
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Description"
-                name="description"
-                value={selectedNode?.description || ''}
-                onChange={handleInputChange}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Priority"
-                name="priority"
-                type="number"
-                value={selectedNode?.priority || ''}
-                onChange={handleInputChange}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Comp Score"
-                name="comp_score"
-                type="number"
-                value={selectedNode?.comp_score || ''}
-                onChange={handleInputChange}
-              />
-              <Button variant="contained" color="primary" onClick={handleSave} style={{ marginTop: '1rem' }}>
-                Save
-              </Button>
-            </ModalContent>
-        </Modal>
-        </Paper>
-        <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
-        {/* <ListViewContainer> */}
-          <strong>-- SuperConcepts --</strong>
-          {superConcepts && <ListView items={[ALL_FILTER, ...superConcepts]} onItemClick={handleListItemClick} currentItem={superConcept}/>}
-        {/* </ListViewContainer> */}
-        </Paper>
+              }
+              label="Edit Mode"
+            />
+            <ToggleButtonGroup
+              value={selectedButton}
+              exclusive
+              onChange={(event, newValue) => setSelectedButton(newValue)}
+              aria-label="toggle button group"
+              style={{ marginBottom: '1rem' }}
+            >
+              <ToggleButton value="1" aria-label="Comp_Score Color" onClick={handleButtonClick}>
+                Comp_Score Color
+              </ToggleButton>
+              <ToggleButton value="2" aria-label="Priority Color" onClick={handleButtonClick}>
+                Priority Color
+              </ToggleButton>
+              <ToggleButton value="3" aria-label="Default Color" onClick={handleButtonClick}>
+                Default Color
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <GraphContainer>
+              {!loading ? (graphData && graphData.nodes.length > 0 && (
+                  <>
+                    <Graph
+                    id="knowledge-graph"
+                    data={graphData}
+                    config={{ ...graphConfig, initialZoom: zoomLevel }}
+                    onClickNode={onClickNode}
+                    onClickLink={onClickLink}
+                    onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
+                    />
+                    <ZoomControls>
+                    <Button variant="contained" color="primary" onClick={handleZoomIn}>
+                    +
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={handleZoomOut}>
+                    -
+                    </Button>
+                    <span>
+                    Zoom: {zoomLevel.toFixed(2)}
+                    </span>
+                    </ZoomControls>
+                  </>
+              )) : <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <CircularProgress />
+            </Box>}
+            </GraphContainer>
+          </Paper>
+          <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05, height: "100%" }}>
+            <strong>-- SuperConcepts --</strong>
+            {superConcepts && <ListView items={[ALL_FILTER, ...superConcepts]} onItemClick={handleListItemClick} currentItem={superConcept}/>}
+          </Paper>
+          </>
+          }
+        </FlexR>
       </MainContent>
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+      >
+        <ModalContent>
+          <Typography variant="h6" gutterBottom>
+            Edit Node
+          </Typography>
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Description"
+            name="description"
+            value={selectedNode?.description || ''}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Priority"
+            name="priority"
+            type="number"
+            value={selectedNode?.priority || ''}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Comp Score"
+            name="comp_score"
+            type="number"
+            value={selectedNode?.comp_score || ''}
+            onChange={handleInputChange}
+          />
+          <Button variant="contained" color="primary" onClick={handleSave} style={{ marginTop: '1rem' }}>
+            Save
+          </Button>
+        </ModalContent>
+    </Modal>
     </Container>
   );
 };
@@ -289,7 +296,7 @@ const fadeIn = keyframes`
 
 const MainContent = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
 `;
 

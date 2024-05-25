@@ -25,7 +25,14 @@ interface ChatState {
   },
   editGraphNode: {
     status: Status,
-  }
+  },
+  getGraphChatRoom: {
+    graphChatRooms: any,
+    status: Status,
+  },
+  createGraphChatRoom: {
+    status: Status,
+  },
 }
 
 export const initialState: ChatState = {
@@ -46,7 +53,14 @@ export const initialState: ChatState = {
   },
   editGraphNode: {
     status: undefined,
-  }
+  },
+  getGraphChatRoom: {
+    graphChatRooms: null,
+    status: undefined,
+  },
+  createGraphChatRoom: {
+    status: undefined,
+  },
 };
 
 export const chatSlice = createSlice({
