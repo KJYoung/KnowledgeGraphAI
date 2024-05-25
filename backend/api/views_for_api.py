@@ -371,8 +371,11 @@ class KnowledgeGraphChatDetailView(APIView):
         for chunk in stream:
             res += chunk.choices[0].delta.content or ""
         
-        json_data = json.loads(res)
-        return json_data['response'], json_data['chat_name']
+        try:
+            json_data = json.loads(res)
+            return json_data['response'], json_data['chat_name']
+        except:
+            return json_data['response'], None
 
     def check_vector_similarity(self, vector1, vector2):
         return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
@@ -470,7 +473,9 @@ class KnowledgeGraphChatDetailView(APIView):
             chat_room.chat_history += f"{message}{CHAT_SEP}{llm_result}\n"
         else:
             chat_room.chat_history += f"{CHAT_SEP}{message}{CHAT_SEP}{llm_result}\n"
-        chat_room.name = chat_name
+        
+        if chat_name:
+            chat_room.name = chat_name
         chat_room.save()
         
-        return Response({'response': llm_result, 'chat_name': chat_name}, status=status.HTTP_201_CREATED)
+        return Response({'response': llm_result, 'chat_name': chat_room.name }, status=status.HTTP_201_CREATED)
