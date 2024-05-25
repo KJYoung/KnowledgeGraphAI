@@ -1,69 +1,75 @@
 {
   "super_concepts": [
     {
-      "name": "Film Industry",
+      "name": "Film",
       "concepts": [
         {
           "name": "Cinematography",
-          "description": "The art and technique of capturing moving images on film or digital media.",
+          "description": "The art and technique of capturing images through motion pictures.",
           "related_concepts": [
             "Filmmaking",
-            "Visual Storytelling",
-            "Camera Techniques",
-            "Lighting",
-            "Film Stock",
-            "Digital Formats"
+            "Visual Storytelling"
+          ]
+        },
+        {
+          "name": "Filmmaking",
+          "description": "The process of making a film.",
+          "related_concepts": [
+            "Cinematography",
+            "Visual Storytelling"
+          ]
+        },
+        {
+          "name": "Visual Storytelling",
+          "description": "The art of conveying a story through visual elements.",
+          "related_concepts": [
+            "Cinematography",
+            "Filmmaking"
           ]
         }
       ]
     },
     {
-      "name": "Visual Storytelling",
+      "name": "Cinematography Techniques",
       "concepts": [
         {
           "name": "Composition",
-          "description": "The arrangement of visual elements within a frame, including placement of subjects, objects, and negative space.",
+          "description": "The placement and arrangement of visual elements within a frame.",
           "related_concepts": [
-            "Aspect Ratio",
             "Framing",
-            "Camera Angles",
-            "Dolly Shot"
+            "Cinematography"
           ]
         },
         {
-          "name": "Aspect Ratio",
-          "description": "The proportional relationship between the width and height of an image, affecting the composition and framing of a shot.",
+          "name": "Framing",
+          "description": "The process of determining what will be within the camera's frame.",
           "related_concepts": [
             "Composition",
-            "Framing",
-            "Shot Composition"
+            "Cinematography"
           ]
         },
         {
           "name": "Depth of Field",
-          "description": "The area in focus in front of and behind a subject, controlled by aperture, focal length, and camera placement.",
+          "description": "The area in focus in front of and behind the subject.",
           "related_concepts": [
-            "Camera Techniques",
-            "Focus",
-            "Aperture"
+            "Cinematography",
+            "Camera"
           ]
         },
         {
-          "name": "Key Lighting",
-          "description": "The primary light source in a scene, used to create the overall mood and atmosphere.",
+          "name": "Color Grading",
+          "description": "The process of altering the color and tone of an image in post-production.",
           "related_concepts": [
-            "Lighting",
-            "Mood",
-            "Atmosphere"
+            "Cinematography",
+            "Post-Production"
           ]
         },
         {
-          "name": "Dolly Shot",
-          "description": "A camera movement that involves moving the camera towards or away from a subject, often used to create a sense of intimacy or drama.",
+          "name": "Coverage",
+          "description": "The process of capturing multiple angles and shots of a scene.",
           "related_concepts": [
-            "Camera Movement",
-            "Composition",
-            "Shot Composition"
+            "Cinematography",
+            "Filmmaking"
           ]
         }
       ]

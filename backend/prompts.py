@@ -68,7 +68,7 @@ example_output = {
 GRAPH_OUTPUT = f"The output should only the JSON format text with the same format as below:\n\n {json.dumps(example_output)} \n\n The output should be fine when be given to `data = json.loads({{your output}})`"
 
 # middle_current_db : 현재 Graph Database에 대한 정보
-GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n"
+GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n. The related concepts you give must be contained in the original database or the concepts you have given in the same output. Do not give the new related concepts that are not in the database or the concepts you have given in the same output.\n\n"
 GRAPH_EMPTY_DB = f"The Database is now empty :)\n\n"
 GRAPH_END_OF_EXPLAIN_DB = f"Okay. This is the end of the database.\n\n"
 # middle_current_article : 현재 Target Article에 대한 정보
