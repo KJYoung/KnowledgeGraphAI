@@ -25,6 +25,7 @@ export const graphConfig = {
       disableLinkForce: false
     },
     node: {
+      labelProperty: 'name',
       color: "#d3d3d3",
       fontColor: "black",
       fontSize: 10,
