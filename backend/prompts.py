@@ -76,6 +76,10 @@ PROMPT_FOR_GRAPH = lambda middle_current_db, middle_current_article: GRAPH_INPUT
 
 
 
+CHAT_OUTPUT_EXAMPLE = {
+    "chat_name": "Computer Architecture : Out of Order Execution",
+    "response": "Out-of-order execution is a technique that allows a processor to execute instructions in a different order than the program specifies, as long as the final result is correct. This can improve performance by exploiting parallelism, avoiding stalls, and hiding latency."
+}
 
 # When there are multiple concepts which are related to user's input
 # prompt for Chatting Room
@@ -83,6 +87,12 @@ CHAT_ROOM = "You are an AI tasked with creating a chatbot that can discuss the g
         Here are the related concepts in the user's Knowledge Graph Database which you can use to generate responses. /n/n"
 
 CHAT_MIDDLE = "Additionally, here is the chat history between the user and the chatbot. /n/n"
+
+
+CHAT_OUTPUT_TYPE = f"Your output should include the response to the user's message and the appropriate name for this chat room. \
+                    The output should only the JSON format text with the same format as below: /n/n. \
+                    example : {json.dumps(CHAT_OUTPUT_EXAMPLE)} /n/n"
+            
 
 CHAT_END = "Please generate a response to the user's message. /n/n"
 
