@@ -1,7 +1,7 @@
 export const graphConfig = {
     automaticRearrangeAfterDropNode: true,
     collapsible: true,
-    directed: true,
+    directed: false,
     focusAnimationDuration: 0.75,
     focusZoom: 1,
     freezeAllDragEvents: false,
@@ -25,6 +25,7 @@ export const graphConfig = {
       disableLinkForce: false
     },
     node: {
+      labelProperty: 'name' as any,
       color: "#d3d3d3",
       fontColor: "black",
       fontSize: 10,
