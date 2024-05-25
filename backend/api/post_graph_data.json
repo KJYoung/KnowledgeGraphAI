@@ -7,13 +7,11 @@
         {
           "name": "concept1",
           "description": "description1",
-          "comp_score": 0.5,
           "related_concepts": ["related1", "related2"]
         },
         {
           "name": "concept2",
           "description": "description2",
-          "comp_score": 0.7,
           "related_concepts": ["related1", "related2"]
         }
       ]
@@ -24,13 +22,11 @@
         {
           "name": "concept3",
           "description": "description3",
-          "comp_score": 0.3,
           "related_concepts": ["related1", "related2"]
         },
         {
           "name": "concept4",
           "description": "description4",
-          "comp_score": 0.8,
           "related_concepts": ["related1", "related2"]
         }
       ]

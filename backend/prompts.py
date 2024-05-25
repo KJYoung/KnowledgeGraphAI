@@ -1,3 +1,5 @@
+import json
+
 CHAT_SEP = "<|THISISCHATSEP|>"  # Separator for separating User & AI in the Article.Summary Field
 TABLE_SEP = "%TS%"            # Separator for separating different fields in describing Knowledge Concept DB 
 
@@ -27,8 +29,43 @@ GRAPH_INPUT = "You are an AI tasked with updating the Knowledge Graph based on t
 
 GRAPH_MIDDLE = "Now, please consider the following new article to update the Knowledge Graph:\n\n"
 
-# Backend가 받을 것으로 기대하는 Output 형식 기안. 
-GRAPH_OUTPUT = "The output is whatever you want."
+# Backend가 받을 것으로 기대하는 Output 형식 기안.
+example_output = {
+    "super_concepts": [
+        {
+            "name": "superconcept1",
+            "concepts": [
+                {
+                    "name": "concept1",
+                    "description": "description1",
+                    "related_concepts": ["related1", "related2"]
+                },
+                {
+                    "name": "concept2",
+                    "description": "description2",
+                    "related_concepts": ["related1", "related2"]
+                }
+            ]
+        },
+        {
+            "name": "superconcept2",
+            "concepts": [
+                {
+                    "name": "concept3",
+                    "description": "description3",
+                    "related_concepts": ["related1", "related2"]
+                },
+                {
+                    "name": "concept4",
+                    "description": "description4",
+                    "related_concepts": ["related1", "related2"]
+                }
+            ]
+        }
+    ]
+}
+
+GRAPH_OUTPUT = f"The output should only the JSON format text with the same format as below:\n\n {json.dumps(example_output)} \n\n The output should be fine when be given to `data = json.loads({{your output}})`"
 
 # middle_current_db : 현재 Graph Database에 대한 정보
 GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n"
@@ -36,6 +73,3 @@ GRAPH_EMPTY_DB = f"The Database is now empty :)\n\n"
 GRAPH_END_OF_EXPLAIN_DB = f"Okay. This is the end of the database.\n\n"
 # middle_current_article : 현재 Target Article에 대한 정보
 PROMPT_FOR_GRAPH = lambda middle_current_db, middle_current_article: GRAPH_INPUT + middle_current_db + GRAPH_MIDDLE + middle_current_article + GRAPH_OUTPUT
-
-# Backend 파일에서 regex 파싱 파트 => DB(Concept) Create or Update 구분 => Execute.
-# 나중에 Concepts.objects.all 불러와서 필터 => Front.
