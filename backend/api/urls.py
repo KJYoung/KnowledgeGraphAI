@@ -2,6 +2,7 @@ from django.urls import path
 from .views_for_api import ExtractConceptsView, KnowledgeGraphView, KnowledgeGraphChatListView, KnowledgeGraphChatDetailView
 from .views import SuperConceptView, ConceptView
 from .views_legacy import IncrementView
+from .views_for_search import SearchAndRetrieveView
 
 urlpatterns = [
     path('increment/', IncrementView.as_view(), name='increment'),
@@ -11,4 +12,5 @@ urlpatterns = [
     path('graph_chat_list/', KnowledgeGraphChatListView.as_view(), name='graph_chat'),
     path('graph_chat_detail/', KnowledgeGraphChatDetailView.as_view(), name='graph_chat_detail'),
     path('concept/', ConceptView.as_view(), name='concept'),
+    path('search/', SearchAndRetrieveView.as_view(), name='search'),
 ]
