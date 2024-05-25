@@ -166,8 +166,9 @@ export const chatSlice = createSlice({
         state.getGraphChatRoom.graphChatRooms = null;
     },
     getGraphChatRoomsSuccess: (state, { payload }) => {
+      console.log(payload);
       state.getGraphChatRoom.status = true;
-      state.getGraphChatRoom.graphChatRooms = payload.graphChatRooms;
+      state.getGraphChatRoom.graphChatRooms = payload.chats;
     }, 
     createNewGraphChatRooms: (state, action: PayloadAction<chatAPI.createNewGraphChatRoomsReqType>) => {
         state.createGraphChatRoom.status = null;
@@ -180,7 +181,7 @@ export const chatSlice = createSlice({
     },
     getGraphChatDetails: (state, action: PayloadAction<chatAPI.getGraphChatDetailsReqType>) => {
       state.getGraphChatDetails.status = null;
-  },
+    },
     getGraphChatDetailsFailure: (state, { payload }) => {
         state.getGraphChatDetails.status = false;
         state.getGraphChatDetails.chattingHistory = '';
@@ -261,9 +262,17 @@ function* editGraphNodeSaga(action: PayloadAction<chatAPI.editGraphNodePutReqTyp
 function* getGraphChatRoomsSaga(action: PayloadAction<chatAPI.getGraphChatRoomsReqType>) {
   try {
     const response: AxiosResponse = yield call(chatAPI.getGraphChatRooms, action.payload);
-    yield put(chatActions.editGraphNodeSuccess(response));
+    yield put(chatActions.getGraphChatRoomsSuccess(response));
   } catch (error) {
-    yield put(chatActions.editGraphNodeFailure(error));
+    yield put(chatActions.getGraphChatRoomsFailure(error));
+  }
+}
+function* createNewGraphChatRoomsSaga(action: PayloadAction<chatAPI.createNewGraphChatRoomsReqType>) {
+  try {
+    const response: AxiosResponse = yield call(chatAPI.createNewGraphChatRooms, action.payload);
+    yield put(chatActions.createNewGraphChatRoomsSuccess(response));
+  } catch (error) {
+    yield put(chatActions.createNewGraphChatRoomsFailure(error));
   }
 }
 
@@ -276,4 +285,5 @@ export default function* chatSaga() {
   yield takeLatest(chatActions.constructGraph, constructGraphSaga);
   yield takeLatest(chatActions.editGraphNode, editGraphNodeSaga);
   yield takeLatest(chatActions.getGraphChatRooms, getGraphChatRoomsSaga);
+  yield takeLatest(chatActions.createNewGraphChatRooms, createNewGraphChatRoomsSaga);
 }

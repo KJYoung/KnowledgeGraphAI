@@ -26,7 +26,7 @@ class Article(AbstractTag):
     link = models.URLField(max_length=200)
 
 
-class UserChattingRoom(models.Model):
+class UserChattingRoom(AbstractTag):
     chat_history = models.TextField(blank=True, default='')
     super_concept = models.ForeignKey(SuperConcept, on_delete=models.CASCADE, blank=True, null=True)
     name = models.TextField(blank=True, default='new_chat_room')

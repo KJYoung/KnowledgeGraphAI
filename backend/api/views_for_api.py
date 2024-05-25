@@ -329,25 +329,31 @@ class KnowledgeGraphChatListView(APIView):
     #super_concept_id 에 속해있는 채팅룸들의 리스트를 전부 반환
     def get(self, request, *args, **kwargs):
         # Response type = [{"name":"article1", "id":]
-        super_concept_id = request.data.get('super_concept_id')
+        
+        super_concept_id = request.GET.get('superConcept')
         print(super_concept_id)
         try:
-            chat_rooms = UserChattingRoom.objects.filter(super_concept_id=super_concept_id)
-            chat_room_names = [{'name': chat_room.name, 'id': chat_room.id} for chat_room in chat_rooms]
-            return Response({ 'chats': chat_room_names}, status=status.HTTP_200_OK)
+            if super_concept_id == '-1':
+                chat_rooms = UserChattingRoom.objects.all()
+                chat_room_names = [{'name': chat_room.name, 'id': chat_room.id} for chat_room in chat_rooms]
+                return Response({ 'chats': chat_room_names}, status=status.HTTP_200_OK)
+            else:
+                chat_rooms = UserChattingRoom.objects.filter(super_concept_id=super_concept_id)
+                chat_room_names = [{'name': chat_room.name, 'id': chat_room.id} for chat_room in chat_rooms]
+                return Response({ 'chats': chat_room_names}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
     ## 채팅방을 만드는 함수
     def post(self, request, *args, **kwargs):
-        super_concept_id = request.data.get('super_concept_id')
+        super_concept_id = request.data.get('superConcept')
         #create the new chat room with the super_concept_id
-        new_chat_room = UserChattingRoom.objects.create(super_concept_id=super_concept_id)
+        if super_concept_id > -1 :
+            new_chat_room = UserChattingRoom.objects.create(super_concept_id=super_concept_id)
+        else:
+            new_chat_room = UserChattingRoom.objects.create()
         new_chat_room.save()
         return Response({'id': new_chat_room.id, 'name': new_chat_room.name}, status=status.HTTP_201_CREATED)        
-    
-    
-        
 
 class KnowledgeGraphChatDetailView(APIView):
     def chat_function(self, message, prompt):

@@ -28,10 +28,15 @@ const ChatRoom: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           Chat Rooms
         </Typography>
+        <Button variant="contained" color="primary" onClick={() => {
+          dispatch(chatActions.createNewGraphChatRooms({ superConcept : -1 }));
+        }}>
+          +
+        </Button>
         <Divider />
         <List>
           {chatLists && chatLists.map((cL: any) => <ListItem button>
-            <ListItemText key={cL} primary={cL} />
+            <ListItemText key={cL.name} primary={cL.name} />
           </ListItem>)}
         </List>
       </Sidebar>

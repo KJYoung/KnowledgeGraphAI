@@ -41,6 +41,7 @@ const GraphVisualization: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<boolean>(false);
   const editNodeStatus = useAppSelector((state) => state.chat.editGraphNode.status);
+  const createChatRoomStatus = useAppSelector((state) => state.chat.createGraphChatRoom.status);
   const [loading, setLoading] = useState(true);
 
   const [selectedButton, setSelectedButton] = useState<string>("1"); // color mode buttons
@@ -52,9 +53,13 @@ const GraphVisualization: React.FC = () => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
-
     return () => clearTimeout(timer);
   }, []);
+  useEffect(() => {
+    if(createChatRoomStatus){
+      dispatch(chatActions.getGraphChatRooms({}));
+    }
+  }, [createChatRoomStatus, dispatch]);
 
   const handleModalClose = () => {
     setModalOpen(false);

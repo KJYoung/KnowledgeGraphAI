@@ -25,7 +25,7 @@ export const getChats = async () => {
 };
 
 export const getGraphChatRooms = async (payload: getGraphChatRoomsReqType) => {
-  const queryString = payload.super_concept_id ? `?superConcept=${encodeURIComponent(payload.super_concept_id)}` : `?superConcept=${encodeURIComponent(-1)}`;
+  const queryString = payload.super_concept_id ? `?superConcept=${encodeURIComponent(payload.super_concept_id)}` : `?superConcept=${encodeURIComponent('-1')}`;
   const response = await client.get(`/api/graph_chat_list/${queryString}`);
   return response.data;
 };

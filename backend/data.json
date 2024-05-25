@@ -1,78 +1,92 @@
 {
   "super_concepts": [
     {
-      "name": "History",
+      "name": "Transformer Architecture",
       "concepts": [
         {
-          "name": "Western Civilization",
-          "description": "The history of Western civilization spans over 3,000 years, from the ancient civilizations of Greece and Rome to the modern nation-states of today. Western civilization has been shaped by a combination of factors, including politics, philosophy, art, science, and religion. It is a complex and multifaceted narrative that spans thousands of years, with various events, figures, and ideas that have contributed to its development.",
+          "name": "Framework for Understanding Transformers",
+          "description": "A framework that provides a comprehensive and intuitive understanding of transformers, highlighting their key components, interactions, and design choices. This framework aims to help developers and researchers better design and improve transformer-based models by understanding the relationships between different components.",
           "related_concepts": [
-            "Hellenism",
-            "Roman Empire",
-            "Enlightenment",
-            "Industrial Revolution",
-            "Nation-state"
+            "Transformer",
+            "Self-Attention Mechanism",
+            "Input Embedding",
+            "Output Linear Layer"
           ]
         },
         {
-          "name": "Hellenism",
-          "description": "The culture and achievements of ancient Greece, which laid the foundations for Western civilization. Hellenism includes contributions to philosophy, theater, and democracy, and its impact can still be seen in modern Western society. The Greeks introduced many concepts that are still relevant today, such as democracy, theater, and philosophy.",
+          "name": "Transformer",
+          "description": "A type of neural network architecture that has become increasingly popular in natural language processing tasks. Transformers are known for their ability to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies.",
           "related_concepts": [
-            "Western Civilization",
-            "Roman Empire"
+            "Self-Attention Mechanism",
+            "Input Embedding",
+            "Output Linear Layer",
+            "Natural Language Processing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transformer Components",
+      "concepts": [
+        {
+          "name": "Self-Attention Mechanism",
+          "description": "The core component of transformers that allows the model to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies. The self-attention mechanism is composed of query, key, and value tensors, which compute the weighted sum of the input sequence based on the attention weights.",
+          "related_concepts": [
+            "Query-Key-Value Tensors",
+            "Input Embedding",
+            "Output Linear Layer",
+            "Multi-Head Attention",
+            "Positional Encoding"
           ]
         },
         {
-          "name": "Roman Empire",
-          "description": "The powerful state that expanded Greek ideas and spread them throughout Europe, establishing the basis for Western political and social structures. The Roman Empire played a crucial role in shaping Western civilization, and its legacy can still be seen in modern politics, architecture, and law.",
+          "name": "Input Embedding",
+          "description": "The component responsible for converting the input sequence into a numerical representation that can be processed by the self-attention mechanism. The input embedding is a crucial step in the transformer architecture, as it enables the model to understand the input sequence.",
           "related_concepts": [
-            "Western Civilization",
-            "Hellenism",
-            "Middle Ages"
+            "Self-Attention Mechanism",
+            "Output Linear Layer",
+            "Transformer"
           ]
         },
         {
-          "name": "Middle Ages",
-          "description": "A period of European history that spanned from the 5th to the 15th century, marked by the rise of Christianity and the development of feudalism. The Middle Ages saw the decline of the Roman Empire and the emergence of new political and social structures, which paved the way for the modern nation-states of today.",
+          "name": "Output Linear Layer",
+          "description": "The final component of the transformer architecture that transforms the output of the self-attention mechanism into the final output of the model. The output linear layer is responsible for generating the predicted output based on the input sequence.",
           "related_concepts": [
-            "Roman Empire",
-            "Renaissance",
-            "Western Civilization"
+            "Self-Attention Mechanism",
+            "Input Embedding",
+            "Transformer"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transformer Techniques",
+      "concepts": [
+        {
+          "name": "Query-Key-Value Tensors",
+          "description": "The three tensors used in the self-attention mechanism to compute the attention weights and weighted sum of the input sequence. The query, key, and value tensors are essential components of the self-attention mechanism, enabling the model to attend to different parts of the input sequence.",
+          "related_concepts": [
+            "Self-Attention Mechanism",
+            "Multi-Head Attention",
+            "Positional Encoding"
           ]
         },
         {
-          "name": "Renaissance",
-          "description": "A cultural and intellectual movement that took place in Europe between the 14th and 17th centuries, marked by a resurgence of classical learning and the emergence of modern science. The Renaissance saw a renewed interest in ancient Greek and Roman culture, and its impact can still be seen in modern art, literature, and science.",
+          "name": "Multi-Head Attention",
+          "description": "A technique used in transformers to concatenate and linearly transform multiple attention outputs, allowing the model to capture different aspects of the input sequence. Multi-head attention enables the model to attend to different parts of the input sequence in parallel, improving its performance.",
           "related_concepts": [
-            "Enlightenment",
-            "Western Civilization",
-            "Middle Ages"
+            "Self-Attention Mechanism",
+            "Query-Key-Value Tensors",
+            "Positional Encoding"
           ]
         },
         {
-          "name": "Enlightenment",
-          "description": "An 18th-century intellectual movement that emphasized reason, individualism, and democracy, shaping modern Western society and politics. The Enlightenment saw the emergence of new ideas about governance, morality, and the nature of humanity, which had a profound impact on the development of modern nation-states.",
+          "name": "Positional Encoding",
+          "description": "A technique used to preserve the order of the input sequence in transformers, as the self-attention mechanism is permutation-invariant. Positional encoding is essential in transformers, as it enables the model to understand the input sequence and its structure.",
           "related_concepts": [
-            "Renaissance",
-            "Industrial Revolution",
-            "Western Civilization"
-          ]
-        },
-        {
-          "name": "Industrial Revolution",
-          "description": "A transformation of the economy and society that took place in the 18th and 19th centuries, driven by technological innovations and the rise of industrial capitalism. The Industrial Revolution had a profound impact on Western civilization, leading to the development of modern nation-states and the emergence of new social and economic structures.",
-          "related_concepts": [
-            "Enlightenment",
-            "Nation-state",
-            "Western Civilization"
-          ]
-        },
-        {
-          "name": "Nation-state",
-          "description": "A sovereign state that represents the identity and interests of a particular nation or people, a concept that emerged in the modern era and continues to shape Western politics and international relations. Nation-states have played a crucial role in shaping modern Western society, and their development has been influenced by a range of factors, including politics, economy, and culture.",
-          "related_concepts": [
-            "Industrial Revolution",
-            "Western Civilization"
+            "Self-Attention Mechanism",
+            "Query-Key-Value Tensors",
+            "Multi-Head Attention"
           ]
         }
       ]
