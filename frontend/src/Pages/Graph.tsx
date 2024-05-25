@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Graph } from 'react-d3-graph';
 import styled, { keyframes } from 'styled-components';
-import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress, Modal, FormControlLabel, Checkbox } from '@mui/material';
+import { TextField, Button, Container, CssBaseline, Paper, Typography, CircularProgress, Modal, FormControlLabel, Checkbox, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { chatActions } from '../store/slices/chat';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -40,6 +40,16 @@ const GraphVisualization: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const editNodeStatus = useAppSelector((state) => state.chat.editGraphNode.status);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedNode(null);
@@ -126,30 +136,31 @@ const GraphVisualization: React.FC = () => {
             label="Edit Mode"
           /> 
           <GraphContainer>
-            {graphData && graphData.nodes.length > 0 && (
+            {!loading ? (graphData && graphData.nodes.length > 0 && (
                 <>
-                <Graph
-                id="knowledge-graph"
-                data={graphData}
-                config={graphConfig}
-                // config={{ ...graphConfig, initialZoom: zoomLevel }}
-                onClickNode={onClickNode}
-                onClickLink={onClickLink}
-                onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
-                />
-                <ZoomControls>
-                <Button variant="contained" color="primary" onClick={handleZoomIn}>
-                +
-                </Button>
-                <Button variant="contained" color="primary" onClick={handleZoomOut}>
-                -
-                </Button>
-                <span>
-                Zoom: {zoomLevel.toFixed(2)}
-                </span>
-                </ZoomControls>
+                  <Graph
+                  id="knowledge-graph"
+                  data={graphData}
+                  config={{ ...graphConfig, initialZoom: zoomLevel }}
+                  onClickNode={onClickNode}
+                  onClickLink={onClickLink}
+                  onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
+                  />
+                  <ZoomControls>
+                  <Button variant="contained" color="primary" onClick={handleZoomIn}>
+                  +
+                  </Button>
+                  <Button variant="contained" color="primary" onClick={handleZoomOut}>
+                  -
+                  </Button>
+                  <span>
+                  Zoom: {zoomLevel.toFixed(2)}
+                  </span>
+                  </ZoomControls>
                 </>
-            )}
+            )) : <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+            <CircularProgress />
+          </Box>}
           </GraphContainer>
           <Modal
             open={modalOpen}
