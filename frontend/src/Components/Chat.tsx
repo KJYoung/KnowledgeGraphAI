@@ -16,7 +16,14 @@ const parseMessage = (message: string) => {
 
 	// Replace [text](url) with clickable links in blue color
 	const urlPattern = /\[(.*?)\]\((https?:\/\/[^\s]+)\)/g;
-  const processedMessage = newlineReplaced.replace(urlPattern, '<a href="$2" style="color: blue;" target="_blank">$1</a>');
+  const urlReplaced1 = newlineReplaced.replace(urlPattern, '<a href="$2" style="color: blue;" target="_blank">$1</a>');
+
+  // Replace <url> with clickable links in blue color
+  const urlPatternAngleBrackets = /<https?:\/\/[^\s]+>/g;
+  const processedMessage = urlReplaced1.replace(urlPatternAngleBrackets, (match) => {
+      const url = match.slice(1, -1); // Remove the < and > characters
+      return `<a href="${url}" style="color: blue;" target="_blank">${url}</a>`;
+  });
 	return processedMessage;
 };
 
