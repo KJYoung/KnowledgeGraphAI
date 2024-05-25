@@ -24,24 +24,24 @@ export const getChats = async () => {
     return response.data;
 };
 
-export const getGraphChatRooms = async (payload: getGraphReqType) => {
-  const queryString = payload.superConcept ? `?superConcept=${encodeURIComponent(payload.superConcept)}` : '';
-  const response = await client.get(`/api/graph-chat-list/${queryString}`);
+export const getGraphChatRooms = async (payload: getGraphChatRoomsReqType) => {
+  const queryString = payload.super_concept_id ? `?superConcept=${encodeURIComponent(payload.super_concept_id)}` : `?superConcept=${encodeURIComponent(-1)}`;
+  const response = await client.get(`/api/graph_chat_list/${queryString}`);
   return response.data;
 };
 
 export const createNewGraphChatRooms = async (payload: createNewGraphChatRoomsReqType) => {
-  const response = await client.post<createNewGraphChatRoomsReqType>(`/api/graph-chat-list/`, payload);
+  const response = await client.post<createNewGraphChatRoomsReqType>(`/api/graph_chat_list/`, payload);
   return response.data;
 };
 
 export const getGraphChatDetails = async () => {
-  const response = await client.get(`/api/graph-chat-detail/`);
+  const response = await client.get(`/api/graph_chat_detail/`);
   return response.data;
 }; 
 
 export const createNewGraphChatMsg = async (payload: createNewGraphChatMsgReqType) => {
-  const response = await client.post<createNewGraphChatMsgReqType>(`/api/graph-chat-list/`, payload);
+  const response = await client.post<createNewGraphChatMsgReqType>(`/api/graph_chat_list/`, payload);
   return response.data;
 };
 
@@ -90,7 +90,7 @@ export const editGraphNode = async (payload: editGraphNodePutReqType) => {
 };
 
 export type getGraphChatRoomsReqType = {
-  superConcept?: number,
+  super_concept_id?: number,
 };
 export type createNewGraphChatRoomsReqType = {
   superConcept: number,

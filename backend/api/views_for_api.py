@@ -330,6 +330,7 @@ class KnowledgeGraphChatListView(APIView):
     def get(self, request, *args, **kwargs):
         # Response type = [{"name":"article1", "id":]
         super_concept_id = request.data.get('super_concept_id')
+        print(super_concept_id)
         try:
             chat_rooms = UserChattingRoom.objects.filter(super_concept_id=super_concept_id)
             chat_room_names = [{'name': chat_room.name, 'id': chat_room.id} for chat_room in chat_rooms]

@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, List, ListItem, ListItemText, Paper, TextField, Button, Typography, Divider } from '@mui/material';
 import styled from '@emotion/styled';
 import { useAppSelector } from '../hooks/useAppSelector';
+import { chatActions } from '../store/slices/chat';
+import { useDispatch } from 'react-redux';
 
 const ChatRoom: React.FC = () => {
+  const dispatch = useDispatch();
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
   const chatLists = useAppSelector((state) => state.chat.getGraphChatRoom.graphChatRooms);
@@ -14,6 +17,10 @@ const ChatRoom: React.FC = () => {
       setInput('');
     }
   };
+
+  useEffect(() => {
+    dispatch(chatActions.getGraphChatRooms({}));
+  }, [dispatch]);
 
   return (
     <ChatContainer>
