@@ -8,14 +8,25 @@ import logging
 import os
 from friendli import Friendli
 from dotenv import load_dotenv
-from .models import Article, Concept, SuperConcept
+from .models import Article, Concept, SuperConcept, UserChattingRoom
 from .serializers import ArticleSerializer
 from prompts import (
     CHAT_SEP, TABLE_SEP, 
     PROMPT_FOR_URL, PROMPT_FOR_GRAPH,
-    GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB,
+    GRAPH_EXPLAIN_DB, GRAPH_EMPTY_DB, GRAPH_END_OF_EXPLAIN_DB, CHAT_ROOM, CHAT_MIDDLE, CHAT_END
 )
 import re, json
+from openai import OpenAI
+
+import numpy as np
+
+
+# OpenAI for Embedding
+
+client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -178,17 +189,6 @@ class KnowledgeGraphView(APIView):
                     })
         
         graph_data = { "nodes": nodes, "links": edges }
-
-        print(graph_data)
-        # data = request.data
-        # super_concepts = data['super_concepts']
-        # user_concepts = []
-        # for super_concept in super_concepts:
-        #     name = super_concept['name']
-        #     #find the concept which has the super_conept of name
-        #     concept = Concept.objects.get(super_concepts__name=name)
-        #     user_concepts.append(concept)
-        # # 클라이언트에게 data 보내기
         return Response({'graph': graph_data}, status=status.HTTP_200_OK)
             
     def post(self, request, *args, **kwargs):
@@ -243,7 +243,7 @@ class KnowledgeGraphView(APIView):
                 super_concept_name = super_concept['name']
                 if not SuperConcept.objects.filter(name=super_concept_name).exists():
                     new_super_concept = SuperConcept.objects.create(name=super_concept_name)
-                
+        
             
             # first, create the concept object if it does not exist
             for super_concept in data['super_concepts']:
@@ -255,12 +255,28 @@ class KnowledgeGraphView(APIView):
                     comp_score = concept.get('comp_score', 0)
                     #check if the concept already exists
                     if not Concept.objects.filter(name=concept_name).exists():
-                        new_concept = Concept.objects.create(name=concept_name, description=description, priority=priority, comp_score=comp_score)
+                        #make openai embedding using the data of name and description
+                        input_embedding = f"{concept_name} {description}"
+                        response = client_openai.embeddings.create(
+                            input=input_embedding,
+                            model="text-embedding-3-small"
+                        )
+                        vector_representation = response.data[0].embedding
+                        print("vector_representation: ", vector_representation)
+                        new_concept = Concept.objects.create(name=concept_name, description=description, priority=priority, comp_score=comp_score, vector_representation=vector_representation)
                         new_super_concept.concepts.add(new_concept)
                     else:
                         #update the description, priority, and comp_score
                         new_concept = Concept.objects.get(name=concept_name)
                         new_concept.description = description
+                        input_embedding = f"{concept_name} {description}"
+                        response = client_openai.embeddings.create(
+                            input=input_embedding,
+                            model="text-embedding-3-small"
+                        )
+                        vector_representation = response.data[0].embedding
+                        print("vector_representation: ", vector_representation)
+                        new_concept.vector_representation = vector_representation
                     new_concept.save()
                 new_super_concept.save()
 
@@ -278,7 +294,13 @@ class KnowledgeGraphView(APIView):
                     for related_concept_name in related_concepts:
                         #check if related concept already exists
                         if not Concept.objects.filter(name=related_concept_name).exists():
-                            new_related_concept = Concept.objects.create(name=related_concept_name)
+                            input_embedding = f"{related_concept_name}"
+                            response = client_openai.embeddings.create(
+                                input=input_embedding,
+                                model="text-embedding-3-small"
+                            )
+                            vector_representation = response.data[0].embedding
+                            new_related_concept = Concept.objects.create(name=related_concept_name, vector_representation=vector_representation)
                             existing_concept.related_concepts.add(new_related_concept)
                         else:
                             existing_related_concept = Concept.objects.get(name=related_concept_name)
@@ -300,48 +322,124 @@ class KnowledgeGraphView(APIView):
             logger.error(f"Error building knowledge graph: {e}")
             raise
 
-# url을 llm 에게 넘겨주고 concept 을 반환했을 때 의 interface json 형식
-# related_concepts 은 새롭게 생성된 것이 아니라 input으로 넘겨준 내 기존의 concept들 중에서 가져온 것 혹은 새롭게 생성된 것.
-# 처음 graph 를 구축할 때는 llm_api 를 두번 call 해서 concept 한 번 뽑아내고 뽑혀진 concept 로 related concept를 선정하던가 다른 형식의 prompt 쓰면 될 것 같음.
-# {
-#     "url": "https://www.example.com",
-#     "super_concepts": [
-#         {
-#             "name": "superconcept1",
-#             "concepts": [
-#                 { 
-#                     "name": "concept1",
-#                     "description": "description1",
-#                     "comp_score": 0.5,
-#                     "prior_concepts": ["prior1", "prior2"],
-#                     "related_concepts": ["related1", "related2"]
-#                 },
-#                 {
-#                     "name": "concept2",
-#                     "description": "description2",
-#                     "comp_score": 0.7,
-#                     "prior_concepts": ["prior1", "prior2"],
-#                     "related_concepts": ["related1", "related2"]
-#                 }
-#             ]
-#         },
-#         {
-#             "name": "superconcept2",
-#             "concepts": [
-#                 {
-#                     "name": "concept3",
-#                     "description": "description3",
-#                     "comp_score": 0.3,
-#                     "prior_concepts": ["prior1", "prior2"],
-#                     "related_concepts": ["related1", "related2"]
-#                 },
-#                 {
-#                     "name": "concept4",
-#                     "description": "description4",
-#                     "comp_score": 0.8,
-#                     "prior_concepts": ["prior1", "prior2"],
-#                     "related_concepts": ["related1", "related2"]
-#                 }
-#             ]
-#         }
-# }
+
+##### Knowledge Graph 기반으로 대화하는 View################################################################################################################################
+class KnowledgeGraphChatListView(APIView):
+    
+    #super_concept_id 에 속해있는 채팅룸들의 리스트를 전부 반환
+    def get(self, request, *args, **kwargs):
+        # Response type = [{"name":"article1", "id":]
+        super_concept_id = request.data.get('super_concept_id')
+        try:
+            chat_rooms = UserChattingRoom.objects.filter(super_concept_id=super_concept_id)
+            chat_room_names = [{'name': chat_room.name, 'id': chat_room.id} for chat_room in chat_rooms]
+            return Response({ 'chats': chat_room_names}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    ## 채팅방을 만드는 함수
+    def post(self, request, *args, **kwargs):
+        super_concept_id = request.data.get('super_concept_id')
+        #create the new chat room with the super_concept_id
+        new_chat_room = UserChattingRoom.objects.create(super_concept_id=super_concept_id)
+        new_chat_room.save()
+        return Response({'id': new_chat_room.id, 'name': new_chat_room.name}, status=status.HTTP_201_CREATED)        
+    
+    
+        
+
+class KnowledgeGraphChatDetailView(APIView):
+    def chat_function(self, message, prompt):
+        new_messages=[]
+        new_messages.append({"role":"assistant", "content": prompt})
+        new_messages.append({"role": "user", "content": message})
+
+        stream = client.chat.completions.create(
+            model="meta-llama-3-70b-instruct",
+            messages=new_messages,
+            stream=True,
+        )
+        res = ""
+        for chunk in stream:
+            res += chunk.choices[0].delta.content or ""
+        return res
+
+    def check_vector_similarity(self, vector1, vector2):
+        return np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+    
+    def select_K_concepts(self, concepts, K, vector_representation):
+        # calculate the similarity between the vector_representation and the vector_representation of each concept
+        similarity_scores = []
+        for concept in concepts:
+            similarity_score = self.check_vector_similarity(vector_representation, concept.vector_representation)
+            similarity_scores.append(similarity_score)
+        # sort the concepts based on the similarity scores
+        sorted_concepts = [concept for _, concept in sorted(zip(similarity_scores, concepts), reverse=True)]
+        return sorted_concepts[:K]
+    
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            articles = Article.objects.all()
+            # article_names = [{'name': article.name} for article in articles]
+            article_names = [article.name for article in articles]
+            return Response({ 'chats': article_names}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response({'error': f"An error occurred: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+    ## user가 대화를 거는 경우
+    def post(self, request, *args, **kwargs):
+        message = request.data.get('message')
+        id = request.data.get('id')
+        if not message or not id:
+            return Response({'error': 'Message, Chat ID, and Superconcept ID are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the chat history by chat_id
+        try :
+            chat_room = UserChattingRoom.objects.get(id=id)
+        except UserChattingRoom.DoesNotExist:
+            return Response({'error': 'Chat history does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        history = chat_room.chat_history # 이전에 대화했었던 대화 기록을 가져옴.
+        superconcept_id = chat_room.super_concept.id
+        
+        # Embedding the user's message
+        response = client_openai.embeddings.create(
+            input=message,
+            model="text-embedding-3-small"
+        )
+        
+        # select the K concepts based on the similarity scores
+        K = 5
+        vector_representation = response.data[0].embedding
+        superconcept = SuperConcept.objects.get(id=superconcept_id)
+        concepts = superconcept.concepts.all()
+        #select
+        if(K < len(concepts)):
+            selected_concepts = self.select_K_concepts(concepts, K, vector_representation)
+        else:
+            selected_concepts = concepts
+            K = len(concepts)
+        
+        # Get the {name, description} of the selected concepts
+        selected_concepts_info = []
+        for concept in selected_concepts:
+            selected_concepts_info.append({"name": concept.name, "description": concept.description})
+
+        # Convert selected_concepts_into a string
+        concepts_str = ""
+        for concept in selected_concepts_info:
+            concepts_str += f"{concept['name']} {TABLE_SEP} {concept['description']}\n"
+            
+        history_processed = get_history(history)
+        
+        prompt = CHAT_ROOM + concepts_str + CHAT_MIDDLE + history_processed + CHAT_END
+            
+        llm_result = self.chat_function(message, prompt)
+        
+        # Update the chat history
+        chat_room.chat_history += f"{message}\n{llm_result}\n"
+        chat_room.save()
+        
+        return Response({'response': llm_result}, status=status.HTTP_201_CREATED)

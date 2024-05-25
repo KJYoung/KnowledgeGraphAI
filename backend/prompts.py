@@ -68,8 +68,23 @@ example_output = {
 GRAPH_OUTPUT = f"The output should only the JSON format text with the same format as below:\n\n {json.dumps(example_output)} \n\n The output should be fine when be given to `data = json.loads({{your output}})`"
 
 # middle_current_db : 현재 Graph Database에 대한 정보
-GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n. The related concepts you give must be contained in the original database or the concepts you have given in the same output. Do not give the new related concepts that are not in the database or the concepts you have given in the same output.\n\n"
+GRAPH_EXPLAIN_DB = f"The followings are the database of the concepts for Knowledge Graph. The format is organized as {{name}} {TABLE_SEP} {{description}} {TABLE_SEP} {{related_name1}}, {{related_name2}}, ...\n\n. The related concepts you give must be contained in the original database or the concepts you have given in the same output. Also, your description for the concepts should be longer than 3 paragraphs at least.\n\n"
 GRAPH_EMPTY_DB = f"The Database is now empty :)\n\n"
 GRAPH_END_OF_EXPLAIN_DB = f"Okay. This is the end of the database.\n\n"
 # middle_current_article : 현재 Target Article에 대한 정보
 PROMPT_FOR_GRAPH = lambda middle_current_db, middle_current_article: GRAPH_INPUT + middle_current_db + GRAPH_MIDDLE + middle_current_article + GRAPH_OUTPUT
+
+
+
+
+# When there are multiple concepts which are related to user's input
+# prompt for Chatting Room
+CHAT_ROOM = "You are an AI tasked with creating a chatbot that can discuss the given topic with a user. \
+        Here are the related concepts in the user's Knowledge Graph Database which you can use to generate responses. /n/n"
+
+CHAT_MIDDLE = "Additionally, here is the chat history between the user and the chatbot. /n/n"
+
+CHAT_END = "Please generate a response to the user's message. /n/n"
+
+        
+
