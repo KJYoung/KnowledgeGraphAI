@@ -32,11 +32,11 @@ interface ToggleButtonContainerProps {
 
 const ToggleButtonContainer = styled.div<ToggleButtonContainerProps>`
   display: inline-flex;
-  width: ${({ width = '130px' }) => width};
+  width: ${({ width = '155px' }) => width};
   align-items: center;
   justify-content: space-between;
   padding: 4px;
-  border-radius: 16px;
+  border-radius: 20px;
   background-color: ${props => (props.isOn ? 'var(--youtube-mode-one)' : 'var(--youtube-mode-two)')};
   color: black;
   font-size: 14px;

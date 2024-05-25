@@ -9,6 +9,7 @@ import { graphConfig } from '../utils/d3GraphConfig';
 import { ListView } from '../Components/ChatList';
 import { Node } from '../store/apis/chat';
 import ChatRoom from '../Components/GraphChat';
+import { CustomToggle } from '../Components/CustomToggle';
 
 const ALL_FILTER = "ALL";
 
@@ -136,7 +137,9 @@ const GraphVisualization: React.FC = () => {
     <Container component="main" maxWidth="xl">
       <CssBaseline />
       <MainContent>
-        <FormControlLabel control={<Checkbox checked={chatMode} onChange={(e) => setChatMode(e.target.checked)} name="editMode" color="primary"/>} label="Chat Mode" />
+        <FlexCenter>
+          <CustomToggle toggleState={chatMode} offText='Graph' onText='Chatting' onToggle={() => setChatMode(cM => !cM)} />
+        </FlexCenter>
         <FlexR>
           {
             chatMode ? <ChatRoom superConcept={superConcept} />
@@ -264,6 +267,12 @@ const ModalContent = styled.div`
 
 
 // Styled-components
+const FlexCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 40px;
+`;
 const FlexR = styled.div`
   display: flex;
   flex-direction: row;
