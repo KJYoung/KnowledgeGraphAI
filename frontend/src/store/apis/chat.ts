@@ -24,6 +24,27 @@ export const getChats = async () => {
     return response.data;
 };
 
+export const getGraphChatRooms = async (payload: getGraphReqType) => {
+  const queryString = payload.superConcept ? `?superConcept=${encodeURIComponent(payload.superConcept)}` : '';
+  const response = await client.get(`/api/graph-chat-list/${queryString}`);
+  return response.data;
+};
+
+export const createNewGraphChatRooms = async (payload: createNewGraphChatRoomsReqType) => {
+  const response = await client.post<createNewGraphChatRoomsReqType>(`/api/graph-chat-list/`, payload);
+  return response.data;
+};
+
+export const getGraphChatDetails = async () => {
+  const response = await client.get(`/api/graph-chat-detail/`);
+  return response.data;
+}; 
+
+export const createNewGraphChatMsg = async (payload: createNewGraphChatMsgReqType) => {
+  const response = await client.post<createNewGraphChatMsgReqType>(`/api/graph-chat-list/`, payload);
+  return response.data;
+};
+
 export type constructGraphPostReqType = {
     url: string,
 };
@@ -74,7 +95,7 @@ export type getGraphChatRoomsReqType = {
 export type createNewGraphChatRoomsReqType = {
   superConcept: number,
 };
-export type getGraphChatDetailesReqType = {
+export type getGraphChatDetailsReqType = {
   chatRoomId: number,
 };
 export type createNewGraphChatMsgReqType = {

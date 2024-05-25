@@ -33,6 +33,13 @@ interface ChatState {
   createGraphChatRoom: {
     status: Status,
   },
+  getGraphChatDetails: {
+    chattingHistory: string,
+    status: Status,
+  },
+  createNewGraphChatMsg: {
+    status: Status,
+  }
 }
 
 export const initialState: ChatState = {
@@ -61,6 +68,13 @@ export const initialState: ChatState = {
   createGraphChatRoom: {
     status: undefined,
   },
+  getGraphChatDetails: {
+    chattingHistory: '',
+    status: undefined,
+  },
+  createNewGraphChatMsg: {
+    status: undefined,
+  }
 };
 
 export const chatSlice = createSlice({
@@ -144,6 +158,34 @@ export const chatSlice = createSlice({
     editGraphNodeFailure: (state, { payload }) => {
         state.editGraphNode.status = false;
     },
+    getGraphChatRoomsFailure: (state, { payload }) => {
+        state.getGraphChatRoom.status = false;
+        state.getGraphChatRoom.graphChatRooms = null;
+    },
+    getGraphChatRoomsSuccess: (state, { payload }) => {
+      state.getGraphChatRoom.status = true;
+      state.getGraphChatRoom.graphChatRooms = payload.graphChatRooms;
+    }, 
+    createNewGraphChatRoomsFailure: (state, { payload }) => {
+        state.createGraphChatRoom.status = false;
+    },
+    createNewGraphChatRoomsSuccess: (state, { payload }) => {
+        state.createGraphChatRoom.status = true;
+    },
+    getGraphChatDetailsFailure: (state, { payload }) => {
+        state.getGraphChatDetails.status = false;
+        state.getGraphChatDetails.chattingHistory = '';
+    },
+    getGraphChatDetailsSuccess: (state, { payload }) => {
+        state.getGraphChatDetails.status = true;
+        state.getGraphChatDetails.chattingHistory = payload.abcd;
+    },
+    createNewGraphChatMsgFailure: (state, { payload }) => {
+        state.createNewGraphChatMsg.status = false;
+    },
+    createNewGraphChatMsgSuccess: (state, { payload }) => {
+        state.createNewGraphChatMsg.status = true;
+    },
   },
 });
 export const chatActions = chatSlice.actions;
@@ -203,6 +245,14 @@ function* editGraphNodeSaga(action: PayloadAction<chatAPI.editGraphNodePutReqTyp
     } catch (error) {
       yield put(chatActions.editGraphNodeFailure(error));
     }
+}
+function* getGraphChatRoomsSaga(action: PayloadAction<chatAPI.getGraphChatRoomsReqType>) {
+  try {
+    const response: AxiosResponse = yield call(chatAPI.getGraphChatRooms, action.payload);
+    yield put(chatActions.editGraphNodeSuccess(response));
+  } catch (error) {
+    yield put(chatActions.editGraphNodeFailure(error));
+  }
 }
 
 export default function* chatSaga() {
