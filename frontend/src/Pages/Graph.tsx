@@ -24,6 +24,14 @@ import { Node } from '../store/apis/chat';
 
 //   setGraphData(formattedGraphData);
 
+const determineNodeColor = (comp_score: number): string => {
+  // Adjust the logic based on your comp_score thresholds and colors
+  if (comp_score > 80) return 'green';
+  if (comp_score > 50) return 'yellow';
+  if (comp_score > 20) return 'orange';
+  return 'red';
+};
+
 const GraphVisualization: React.FC = () => {
   const dispatch = useDispatch();
   
@@ -42,7 +50,16 @@ const GraphVisualization: React.FC = () => {
     }
   };
   const superConcepts = useAppSelector((state) => state.chat.superConcepts.superConcepts);
-  const graphData = useAppSelector((state) => state.chat.getGraph.graph);
+  //const graphData = useAppSelector((state) => state.chat.getGraph.graph);
+
+  const rawGraphData = useAppSelector((state) => state.chat.getGraph.graph);
+  const graphData = rawGraphData ? {
+    nodes: rawGraphData.nodes.map((node: any) => ({
+      ...node,
+      color: determineNodeColor(node.comp_score),
+    })),
+    links: rawGraphData.links,
+  } : null;
 
   const [zoomLevel, setZoomLevel] = useState<number>(1);
 
@@ -62,7 +79,7 @@ const GraphVisualization: React.FC = () => {
   };
 
   const onClickNode = (nodeId: string) => {
-    if(editMode){
+    if(editMode && graphData){
       const clickedNode = graphData.nodes.find((n : any) => parseInt(n.id) === parseInt(nodeId));
       if (clickedNode) {
           setSelectedNode(clickedNode);
