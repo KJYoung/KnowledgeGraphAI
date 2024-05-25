@@ -93,7 +93,7 @@ export type getGraphChatRoomsReqType = {
   super_concept_id?: number,
 };
 export type createNewGraphChatRoomsReqType = {
-  superConcept: number,
+  superConcept: string,
 };
 export type getGraphChatDetailsReqType = {
   chatRoomId: number,

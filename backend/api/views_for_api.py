@@ -346,14 +346,19 @@ class KnowledgeGraphChatListView(APIView):
         
     ## 채팅방을 만드는 함수
     def post(self, request, *args, **kwargs):
-        super_concept_id = request.data.get('superConcept')
+        super_concept_name = request.data.get('superConcept')
         #create the new chat room with the super_concept_id
-        if super_concept_id > -1 :
-            new_chat_room = UserChattingRoom.objects.create(super_concept_id=super_concept_id)
-        else:
+        if super_concept_name == "ALL":
             new_chat_room = UserChattingRoom.objects.create()
+        else:
+            #create the new chat room with the super_concept_name
+            try:
+                super_concept = SuperConcept.objects.get(name=super_concept_name)
+                new_chat_room = UserChattingRoom.objects.create(super_concept=super_concept)
+            except SuperConcept.DoesNotExist:
+                return Response({'error': 'SuperConcept does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         new_chat_room.save()
-        return Response({'id': new_chat_room.id, 'name': new_chat_room.name}, status=status.HTTP_201_CREATED)        
+        return Response({'id': new_chat_room.id, 'name': new_chat_room.name}, status=status.HTTP_201_CREATED)       
 
 class KnowledgeGraphChatDetailView(APIView):
     def chat_function(self, message, prompt):

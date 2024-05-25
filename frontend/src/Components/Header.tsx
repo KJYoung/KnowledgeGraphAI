@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { coreActions, TabState } from "../store/slices/core";
 // import { coreActions, selectCore, TabState } from "../store/slices/core";
-import { NAV_MAIN_PAGE, NAV_NEW_PAGE, NAV_SUM_PAGE } from "../App";
+import { NAV_NEW_PAGE, NAV_SUM_PAGE } from "../App";
 
 const HeaderBtn = styled.div`
     height: 100%;
@@ -47,9 +47,9 @@ const Header = () => {
             {/* <HeaderBtn color={isActiveTab(TabState.MAIN)} onClick={() => go_to_fn(TabState.MAIN, NAV_LOBBY_PAGE)}>
                 <span>HOME</span>
             </HeaderBtn> */}
-            <HeaderBtn color={isActiveTab(TabState.MAIN)} onClick={() => go_to_fn(TabState.MAIN, NAV_MAIN_PAGE)}>
+            {/* <HeaderBtn color={isActiveTab(TabState.MAIN)} onClick={() => go_to_fn(TabState.MAIN, NAV_MAIN_PAGE)}>
                 <span>HOME</span>
-            </HeaderBtn>
+            </HeaderBtn> */}
             <HeaderBtn color={isActiveTab(TabState.SUMMARY)} onClick={() => go_to_fn(TabState.SUMMARY, NAV_SUM_PAGE)}>
                 <span>GRAPH</span>
             </HeaderBtn>

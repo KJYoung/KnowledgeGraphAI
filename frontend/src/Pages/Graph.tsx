@@ -139,7 +139,7 @@ const GraphVisualization: React.FC = () => {
         <FormControlLabel control={<Checkbox checked={chatMode} onChange={(e) => setChatMode(e.target.checked)} name="editMode" color="primary"/>} label="Chat Mode" />
         <FlexR>
           {
-            chatMode ? <ChatRoom />
+            chatMode ? <ChatRoom superConcept={superConcept} />
             : <><Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1}}>
             <FormControlLabel
               control={

@@ -19,6 +19,7 @@ const AddNewKnowledge: React.FC = () => {
   const chatLists = useAppSelector((state) => state.chat.chatList);
   const articleChats = useAppSelector((state) => state.chat.chatSummary);
   const articleChatStat = useAppSelector((state) => state.chat.chatStatus);
+  const graphExtStat = useAppSelector((state) => state.chat.constructGraph.status);
 
   const [input, setInput] = useState<string>('');
   const [chat, setChat] = useState<string>('');
@@ -60,9 +61,9 @@ const AddNewKnowledge: React.FC = () => {
                 <Button variant="contained" color="primary" onClick={handleExtractConcepts} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
                   Extract!
               </Button>}
-              {articleChats !== null &&  <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
+              {articleChats !== null && (graphExtStat === null ? <CircularProgress /> : <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
                 Add to Graph!
-              </Button>}
+              </Button>)}
             </FlexR>
           </FlexC>
           <FormC>

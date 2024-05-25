@@ -1,92 +1,76 @@
 {
   "super_concepts": [
     {
-      "name": "Transformer Architecture",
+      "name": "Neural Network Architectures",
       "concepts": [
         {
-          "name": "Framework for Understanding Transformers",
-          "description": "A framework that provides a comprehensive and intuitive understanding of transformers, highlighting their key components, interactions, and design choices. This framework aims to help developers and researchers better design and improve transformer-based models by understanding the relationships between different components.",
-          "related_concepts": [
-            "Transformer",
-            "Self-Attention Mechanism",
-            "Input Embedding",
-            "Output Linear Layer"
-          ]
-        },
-        {
           "name": "Transformer",
-          "description": "A type of neural network architecture that has become increasingly popular in natural language processing tasks. Transformers are known for their ability to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies.",
+          "description": "A type of neural network architecture that has become increasingly popular in natural language processing tasks. It is composed of three main components: the input embedding, the self-attention mechanism, and the output linear layer. The self-attention mechanism is the core component of transformers, allowing the model to attend to different parts of the input sequence simultaneously. By understanding these components and their relationships, developers and researchers can better design and improve transformer-based models.",
           "related_concepts": [
             "Self-Attention Mechanism",
             "Input Embedding",
             "Output Linear Layer",
             "Natural Language Processing"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Transformer Components",
-      "concepts": [
+        },
         {
           "name": "Self-Attention Mechanism",
-          "description": "The core component of transformers that allows the model to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies. The self-attention mechanism is composed of query, key, and value tensors, which compute the weighted sum of the input sequence based on the attention weights.",
+          "description": "The core component of transformers that allows the model to attend to different parts of the input sequence simultaneously, enabling parallelization and capturing long-range dependencies. It is composed of query, key, and value tensors, which compute the weighted sum of the input sequence based on the attention weights.",
           "related_concepts": [
+            "Transformer",
             "Query-Key-Value Tensors",
-            "Input Embedding",
-            "Output Linear Layer",
-            "Multi-Head Attention",
-            "Positional Encoding"
+            "Attention Weights",
+            "Parallelization"
           ]
         },
         {
           "name": "Input Embedding",
-          "description": "The component responsible for converting the input sequence into a numerical representation that can be processed by the self-attention mechanism. The input embedding is a crucial step in the transformer architecture, as it enables the model to understand the input sequence.",
+          "description": "The component responsible for converting the input sequence into a numerical representation that can be processed by the self-attention mechanism. It is a crucial step in the transformer architecture, as it enables the model to understand the input sequence and perform subsequent computations.",
           "related_concepts": [
+            "Transformer",
             "Self-Attention Mechanism",
-            "Output Linear Layer",
-            "Transformer"
+            "Numerical Representation"
           ]
         },
         {
           "name": "Output Linear Layer",
-          "description": "The final component of the transformer architecture that transforms the output of the self-attention mechanism into the final output of the model. The output linear layer is responsible for generating the predicted output based on the input sequence.",
+          "description": "The component responsible for transforming the output of the self-attention mechanism into the final output of the model. It is a linear layer that takes the output of the self-attention mechanism and produces the final output of the transformer.",
           "related_concepts": [
+            "Transformer",
             "Self-Attention Mechanism",
-            "Input Embedding",
-            "Transformer"
+            "Linear Layer"
           ]
         }
       ]
     },
     {
-      "name": "Transformer Techniques",
+      "name": "Techniques",
       "concepts": [
         {
           "name": "Query-Key-Value Tensors",
-          "description": "The three tensors used in the self-attention mechanism to compute the attention weights and weighted sum of the input sequence. The query, key, and value tensors are essential components of the self-attention mechanism, enabling the model to attend to different parts of the input sequence.",
+          "description": "The three tensors used in the self-attention mechanism to compute the attention weights and weighted sum of the input sequence. They are used to compute the similarity between different parts of the input sequence and attend to the most relevant parts.",
           "related_concepts": [
             "Self-Attention Mechanism",
-            "Multi-Head Attention",
-            "Positional Encoding"
+            "Attention Weights",
+            "Weighted Sum"
           ]
         },
         {
           "name": "Multi-Head Attention",
-          "description": "A technique used in transformers to concatenate and linearly transform multiple attention outputs, allowing the model to capture different aspects of the input sequence. Multi-head attention enables the model to attend to different parts of the input sequence in parallel, improving its performance.",
+          "description": "A technique used in transformers to concatenate and linearly transform multiple attention outputs, allowing the model to capture different aspects of the input sequence. It is a mechanism that enables the model to attend to different parts of the input sequence simultaneously and capture different relationships between them.",
           "related_concepts": [
+            "Transformer",
             "Self-Attention Mechanism",
-            "Query-Key-Value Tensors",
-            "Positional Encoding"
+            "Attention Outputs"
           ]
         },
         {
           "name": "Positional Encoding",
-          "description": "A technique used to preserve the order of the input sequence in transformers, as the self-attention mechanism is permutation-invariant. Positional encoding is essential in transformers, as it enables the model to understand the input sequence and its structure.",
+          "description": "A technique used to preserve the order of the input sequence in transformers, as the self-attention mechanism is permutation-invariant. It is a mechanism that enables the model to understand the order of the input sequence and capture positional relationships between different parts of the sequence.",
           "related_concepts": [
+            "Transformer",
             "Self-Attention Mechanism",
-            "Query-Key-Value Tensors",
-            "Multi-Head Attention"
+            "Permutation-Invariance"
           ]
         }
       ]

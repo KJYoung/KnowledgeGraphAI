@@ -5,7 +5,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { chatActions } from '../store/slices/chat';
 import { useDispatch } from 'react-redux';
 
-const ChatRoom: React.FC = () => {
+const ChatRoom = ({ superConcept } : {superConcept: string}) => {
   const dispatch = useDispatch();
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
@@ -29,7 +29,7 @@ const ChatRoom: React.FC = () => {
           Chat Rooms
         </Typography>
         <Button variant="contained" color="primary" onClick={() => {
-          dispatch(chatActions.createNewGraphChatRooms({ superConcept : -1 }));
+          dispatch(chatActions.createNewGraphChatRooms({ superConcept : superConcept }));
         }}>
           +
         </Button>
