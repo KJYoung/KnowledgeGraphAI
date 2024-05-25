@@ -44,7 +44,10 @@ const AddNewKnowledge: React.FC = () => {
   // const [article, setArticle] = useState<Article | null>(null); // Add this line
 
   useEffect(() => {
+    setInput("");
+    setChat("");
     dispatch(chatActions.getChats());
+    dispatch(chatActions.clearState());
   }, [dispatch]);
 
   const handleExtractConcepts = async () => {
@@ -79,69 +82,75 @@ const AddNewKnowledge: React.FC = () => {
   };
 
   return (
-    <Container component="main" maxWidth="lg">
+    <Container component="main" maxWidth="xl">
       <CssBaseline />
       <MainContent>
-      <Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1 }}>
-        <Typography variant="h5" gutterBottom>
-        Add New Knowledge
-        </Typography>
-        <FormC>
-        <TextField variant="outlined" margin="normal" required fullWidth id="input" label="Enter Keyword or URL" name="input" autoComplete="off" autoFocus value={input} onChange={(e) => setInput(e.target.value)} />
-        {articleChatStat === null ?
-          <CircularProgress />
-          :
-          <Button variant="contained" color="primary" onClick={handleExtractConcepts} style={{ marginTop: '1rem' }}>
-          Extract Concepts
-          </Button>
-        }
-        </FormC>
-        <FullDiv>
-        {articleChats && <Chat messages={transformString(articleChats)} />}
-        </FullDiv>
-        {articleChats && <FormR>
-        <TextField variant="outlined" margin="normal" required fullWidth id="input" label="Additional Chats about the URL" name="input" autoComplete="off" value={chat} onChange={(e) => setChat(e.target.value)} />
-        {articleChatStat === null ?
-          <CircularProgress />
-          :
-          <Button variant="contained" color="primary" onClick={handleAdditionalChats} style={{ marginTop: '1rem' }}>
-          Send!
-          </Button>
-        }
-        </FormR>}
-        <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '1rem' }}>
-        Add to Graph!
-        </Button>
-        <GraphContainer>
-        {graphData.nodes.length > 0 && (
-          <>
-          <Graph
-            id="knowledge-graph"
-            data={graphData}
-            config={{ ...graphConfig, initialZoom: zoomLevel }}
-            onClickNode={onClickNode}
-            onClickLink={onClickLink}
-            onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
-          />
-          <ZoomControls>
-            <Button variant="contained" color="primary" onClick={handleZoomIn}>
-            +
+        <Paper elevation={3} style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center', flex: 1 }}>
+          <FlexC>
+            <Typography variant="h5" gutterBottom>
+              Add New Knowledge
+            </Typography>
+            <FlexR>
+              {articleChatStat === null ?
+                <CircularProgress />
+                :
+                <Button variant="contained" color="primary" onClick={handleExtractConcepts} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
+                  Extract!
+              </Button>}
+              {articleChats !== null &&  <Button variant="contained" color="primary" onClick={handleAddtoGraph} style={{ marginTop: '0rem', marginLeft: '1rem' }}>
+                Add to Graph!
+              </Button>}
+            </FlexR>
+          </FlexC>
+          <FormC>
+          <TextField variant="outlined" margin="normal" required fullWidth id="input" label="Enter Keyword or URL" name="input" autoComplete="off" autoFocus value={input} onChange={(e) => setInput(e.target.value)} />
+          </FormC>
+          <FullDiv>
+            {articleChats && <Chat messages={transformString(articleChats)} />}
+          </FullDiv>
+          {articleChats && <FormR>
+          <TextField variant="outlined" margin="normal" required fullWidth id="input" label="Additional Chats about the URL" name="input" autoComplete="off" value={chat} onChange={(e) => setChat(e.target.value)} />
+          {articleChatStat === null ?
+            <CircularProgress />
+            :
+            <Button variant="contained" color="primary" onClick={handleAdditionalChats} style={{ marginTop: '1rem' }}>
+            Send!
             </Button>
-            <Button variant="contained" color="primary" onClick={handleZoomOut}>
-            -
-            </Button>
-            <span>
-            Zoom: {zoomLevel.toFixed(2)}
-            </span>
-          </ZoomControls>
-          </>
-        )}
-        </GraphContainer>
-      </Paper>
-      <ListViewContainer>
-        <strong>-- Past Chats --</strong>
-        <ListView items={chatLists} onItemClick={handleListItemClick} />
-      </ListViewContainer>
+          }
+          </FormR>}
+          
+          <GraphContainer>
+          {graphData.nodes.length > 0 && (
+            <>
+            <Graph
+              id="knowledge-graph"
+              data={graphData}
+              config={{ ...graphConfig, initialZoom: zoomLevel }}
+              onClickNode={onClickNode}
+              onClickLink={onClickLink}
+              onZoomChange={(prevZoom, newZoom) => setZoomLevel(newZoom)}
+            />
+            <ZoomControls>
+              <Button variant="contained" color="primary" onClick={handleZoomIn}>
+              +
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleZoomOut}>
+              -
+              </Button>
+              <span>
+              Zoom: {zoomLevel.toFixed(2)}
+              </span>
+            </ZoomControls>
+            </>
+          )}
+          </GraphContainer>
+        </Paper>
+        <Paper elevation={3} style={{ padding: '2rem', marginLeft: '2rem', marginTop: '2rem', textAlign: 'center', flex: 0.05 }}>
+        {/* <ListViewContainer> */}
+          <strong>-- Past Chats --</strong>
+          <ListView items={chatLists} onItemClick={handleListItemClick} />
+        {/* </ListViewContainer> */}
+        </Paper>
       </MainContent>
     </Container>
   );
@@ -154,6 +163,18 @@ const FullDiv = styled.div`
 `;
 
 // Styled-components
+const FlexR = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+const FlexC = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+`;
 const FormR = styled.div`
   display: flex;
   flex-direction: row;

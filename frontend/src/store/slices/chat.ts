@@ -28,6 +28,12 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    clearState: state => {
+        state.chatSummary = null;
+        state.error = null;
+        state.chatStatus = undefined;
+        state.constructGraph.status = undefined;
+    },
     getChats: state => {
         state.chatStatus = null;
     },
